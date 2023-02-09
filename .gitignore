@@ -1,0 +1,11 @@
+# ide
+/.idea
+
+# composer
+/vendor
+/composer.lock
+
+# tests
+/reports
+/.phpunit.result.cache
+/phpunit.xml
