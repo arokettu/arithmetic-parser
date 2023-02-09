@@ -41,7 +41,6 @@ final class Calculator
             $normalizedVars[$normalizedName] = $value;
         }
 
-        // iteration is destructive so create a copy to operate on
         $stack = new Stack();
 
         foreach ($this->operations as $operation) {
