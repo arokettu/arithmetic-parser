@@ -31,7 +31,7 @@ final class Calculator
         $normalizedVars = [];
 
         foreach ($vars as $name => $value) {
-            if (!is_string($name)) {
+            if (!\is_string($name)) {
                 throw new \InvalidArgumentException('Invalid variable name: ' . $name);
             }
             $normalizedName = NormalizationHelper::normalizeName($name);
@@ -47,7 +47,7 @@ final class Calculator
         foreach ($this->operations as $operation) {
             switch ($operation->type) {
                 case OperationType::NUMBER:
-                    $stack->push(floatval($operation->value));
+                    $stack->push(\floatval($operation->value));
                     break;
                 case OperationType::VARIABLE:
                     $varName = $operation->value['normalized'];
@@ -70,7 +70,7 @@ final class Calculator
             }
         }
 
-        if (count($stack) !== 1) {
+        if (\count($stack) !== 1) {
             throw new \RuntimeException('Operator sequence is wrong');
         }
 

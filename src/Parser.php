@@ -65,7 +65,8 @@ final class Parser
 
                         while ($operation->type !== OperationType::BRACKET) {
                             $operations[] = $operation;
-                            $operation = $stack->pop(); // bracket will be removed from stack and not added to $operations
+                            // bracket will be removed from the stack and not added to $operations
+                            $operation = $stack->pop();
                         }
                     } catch (\UnderflowException) {
                         throw new \RuntimeException('Unbalanced brackets');
@@ -98,7 +99,7 @@ final class Parser
                     // regular operators
                     $priority = $this->getPriority($lexer->token->value);
 
-                    while (count($stack) > 0) {
+                    while (\count($stack) > 0) {
                         $stackTop = $stack->peek();
                         switch ($stackTop->type) {
                             case OperationType::FUNCTION:

@@ -16,6 +16,9 @@
         "chat": "https://gitter.im/arokettu/community"
     },
     "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
         "sort-packages": true
     },
     "autoload": {
@@ -37,6 +40,10 @@
         "ext-ds": "More efficient data structures"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "psy/psysh": "*",
+        "sandfox.dev/code-standard": "^10@dev",
+        "squizlabs/php_codesniffer": "*",
+        "vimeo/psalm": "^5.6"
     }
 }
