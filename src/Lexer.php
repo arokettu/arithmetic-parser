@@ -6,6 +6,9 @@ namespace Arokettu\ArithmeticParser;
 
 use Doctrine\Common\Lexer\AbstractLexer;
 
+/**
+ * @extends AbstractLexer<Token, string>
+ */
 final class Lexer extends AbstractLexer
 {
     protected function getCatchablePatterns(): array
