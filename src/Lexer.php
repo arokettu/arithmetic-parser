@@ -26,7 +26,10 @@ final class Lexer extends AbstractLexer
         ];
     }
 
-    protected function getType(string &$value): Token
+    /**
+     * mixed is for compatibility with lexer 2.x, actually it's string only
+     */
+    protected function getType(mixed &$value): Token
     {
         switch (true) {
             // brackets

@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "^8.1",
-        "doctrine/lexer": "^3.0",
+        "doctrine/lexer": "^2 | ^3",
         "php-ds/php-ds": "^1.4"
     },
     "suggest": {
