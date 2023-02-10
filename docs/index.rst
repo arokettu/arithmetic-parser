@@ -1,9 +1,9 @@
-Arithmetic Parser for PHP
-#########################
+Arithmetic Parser
+#################
 
 |Packagist| |GitLab| |GitHub| |Bitbucket| |Gitea|
 
-A library that can parse and interpret arithmetic expressions.
+A PHP library that can parse and interpret arithmetic expressions.
 It's aimed to be configurable and safe to process end user's input.
 
 Installation
