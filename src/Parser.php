@@ -134,7 +134,7 @@ final class Parser
             $operations[] = $op;
         }
 
-        return [...$operations];
+        return $operations;
     }
 
     private function getPriority(string $operator): int
