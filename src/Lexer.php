@@ -14,7 +14,7 @@ final class Lexer extends AbstractLexer
     protected function getCatchablePatterns(): array
     {
         return [
-            '[_a-zA-Z][_a-zA-Z0-9]*',
+            '\$?[_a-zA-Z][_a-zA-Z0-9]*',
             '\d+(?:\.\d+)?',
             '[\-+*\/]',
             '\(',

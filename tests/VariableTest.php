@@ -14,6 +14,10 @@ class VariableTest extends TestCase
     {
         // var names are case-insensitive
         self::assertEquals(5, Calculator::evaluate('MyVar1 + 3', myVar1: 2));
+        // $ prefix is optional
+        self::assertEquals(5, Calculator::evaluate('MyVar1 + 3', ...['$myVar1' => 2]));
+        self::assertEquals(5, Calculator::evaluate('$MyVar1 + 3', ...['$myVar1' => 2]));
+        self::assertEquals(5, Calculator::evaluate('$MyVar1 + 3', myVar1: 2));
     }
 
     public function testDuplicateVariable(): void
