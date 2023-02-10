@@ -9,3 +9,6 @@
 /reports
 /.phpunit.result.cache
 /phpunit.xml
+
+# misc
+/debug
