@@ -25,7 +25,9 @@ composer require 'arokettu/arithmetic-parser'
 
 ## Documentation
 
-TODO
+Read the full documentation here: <https://sandfox.dev/php/arithmetic-parser.html>
+
+Also on Read the Docs: <https://php-arithmetic-parser.readthedocs.io>
 
 ## Support
 

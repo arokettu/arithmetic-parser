@@ -4,6 +4,7 @@
     "description": "Configurable arithmetic parser and interpreter",
     "keywords": ["arithmetic", "maths", "math", "parser", "interpreter"],
     "license": "MIT",
+    "homepage": "https://sandfox.dev/php/arithmetic-parser.html",
     "authors": [{
         "name": "Anton Smirnov",
         "email": "sandfox@sandfox.me",
@@ -13,6 +14,7 @@
     "support": {
         "issues": "https://gitlab.com/sandfox/arithmetic-parser/-/issues",
         "source": "https://gitlab.com/sandfox/arithmetic-parser",
+        "docs": "https://php-arithmetic-parser.readthedocs.io/",
         "chat": "https://gitter.im/arokettu/community"
     },
     "config": {
