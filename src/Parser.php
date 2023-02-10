@@ -9,7 +9,7 @@ use Ds\Stack;
 final class Parser
 {
     /**
-     * @return array<int, Operation>
+     * @return array<int, Parser\Operation>
      */
     public function parse(string $input): array
     {
@@ -17,7 +17,7 @@ final class Parser
         $lexer->setInput($input);
         $lexer->moveNext();
 
-        /** @var Stack<Operation> $stack */
+        /** @var Stack<Parser\Operation> $stack */
         $stack = new Stack();
         $operations = [];
 
@@ -29,7 +29,7 @@ final class Parser
             switch ($lexer->token->type) {
                 // numbers
                 case Token::T_NUMBER:
-                    $operations[] = new Operation(OperationType::NUMBER, value: $lexer->token->value);
+                    $operations[] = new Parser\Operation(Parser\OperationType::NUMBER, value: $lexer->token->value);
                     break;
 
                 // todo: handle postfix operators
@@ -45,10 +45,10 @@ final class Parser
 
                     if ($lexer->lookahead?->type === Token::T_BRACKET_OPEN) {
                         // function call
-                        $stack->push(new Operation(OperationType::FUNCTION, value: $value));
+                        $stack->push(new Parser\Operation(Parser\OperationType::FUNCTION, value: $value));
                     } else {
                         // variable name
-                        $operations[] = new Operation(OperationType::VARIABLE, value: $value);
+                        $operations[] = new Parser\Operation(Parser\OperationType::VARIABLE, value: $value);
                     }
                     break;
 
@@ -56,14 +56,14 @@ final class Parser
                     if ($lexer->lookahead?->type === Token::T_BRACKET_CLOSE) {
                         throw new \RuntimeException('Empty brackets');
                     }
-                    $stack->push(new Operation(OperationType::BRACKET));
+                    $stack->push(new Parser\Operation(Parser\OperationType::BRACKET));
                     break;
 
                 case Token::T_BRACKET_CLOSE:
                     try {
                         $operation = $stack->pop();
 
-                        while ($operation->type !== OperationType::BRACKET) {
+                        while ($operation->type !== Parser\OperationType::BRACKET) {
                             $operations[] = $operation;
                             // bracket will be removed from the stack and not added to $operations
                             $operation = $stack->pop();
@@ -88,7 +88,7 @@ final class Parser
                             if ($lexer->lookahead->type === Token::T_NUMBER) {
                                 $lexer->lookahead->value = '-' . $lexer->lookahead->value;
                             } else {
-                                $stack->push(new Operation(OperationType::UNARY_OPERATOR, value: '-'));
+                                $stack->push(new Parser\Operation(Parser\OperationType::UNARY_OPERATOR, value: '-'));
                             }
                             break;
                         }
@@ -102,10 +102,10 @@ final class Parser
                     while (\count($stack) > 0) {
                         $stackTop = $stack->peek();
                         switch ($stackTop->type) {
-                            case OperationType::FUNCTION:
+                            case Parser\OperationType::FUNCTION:
                                 $operations[] = $stack->pop();
                                 continue 2; // continue while
-                            case OperationType::BINARY_OPERATOR:
+                            case Parser\OperationType::BINARY_OPERATOR:
                                 $stackTopPriority = $this->getPriority($stackTop->value);
                                 if ($stackTopPriority >= $priority) {
                                     $operations[] = $stack->pop();
@@ -117,7 +117,7 @@ final class Parser
                         }
                     }
 
-                    $stack->push(new Operation(OperationType::BINARY_OPERATOR, $lexer->token->value));
+                    $stack->push(new Parser\Operation(Parser\OperationType::BINARY_OPERATOR, $lexer->token->value));
 
                     break;
 
@@ -129,9 +129,9 @@ final class Parser
         // add remaining operators
         foreach ($stack as $op) {
             if (
-                $op->type !== OperationType::BINARY_OPERATOR &&
-                $op->type !== OperationType::UNARY_OPERATOR &&
-                $op->type !== OperationType::FUNCTION
+                $op->type !== Parser\OperationType::BINARY_OPERATOR &&
+                $op->type !== Parser\OperationType::UNARY_OPERATOR &&
+                $op->type !== Parser\OperationType::FUNCTION
             ) {
                 throw new \RuntimeException('Probably invalid operator combination');
             }

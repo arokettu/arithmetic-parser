@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Arokettu\ArithmeticParser;
+namespace Arokettu\ArithmeticParser\Parser;
 
 final class Operation
 {

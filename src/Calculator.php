@@ -11,7 +11,7 @@ final class Calculator
     private readonly array $operations;
 
     public function __construct(
-        Operation ...$operations,
+        Parser\Operation ...$operations,
     ) {
         $this->operations = $operations;
     }
@@ -45,23 +45,23 @@ final class Calculator
 
         foreach ($this->operations as $operation) {
             switch ($operation->type) {
-                case OperationType::NUMBER:
+                case Parser\OperationType::NUMBER:
                     $stack->push(\floatval($operation->value));
                     break;
-                case OperationType::VARIABLE:
+                case Parser\OperationType::VARIABLE:
                     $varName = $operation->value['normalized'];
                     if (!isset($normalizedVars[$varName])) {
                         throw new \RuntimeException("Variable {$operation->value['name']} is not defined");
                     }
                     $stack->push($normalizedVars[$varName]);
                     break;
-                case OperationType::FUNCTION:
+                case Parser\OperationType::FUNCTION:
                     $this->performFunction($operation, $stack);
                     break;
-                case OperationType::BINARY_OPERATOR:
+                case Parser\OperationType::BINARY_OPERATOR:
                     $this->performBinaryOperator($operation, $stack);
                     break;
-                case OperationType::UNARY_OPERATOR:
+                case Parser\OperationType::UNARY_OPERATOR:
                     $this->performUnaryOperator($operation, $stack);
                     break;
                 default:
@@ -76,7 +76,7 @@ final class Calculator
         return $stack->pop();
     }
 
-    private function performFunction(Operation $operation, Stack $stack): void
+    private function performFunction(Parser\Operation $operation, Stack $stack): void
     {
         $function = $operation->value['normalized'];
 
@@ -91,7 +91,7 @@ final class Calculator
         }
     }
 
-    private function performBinaryOperator(Operation $operation, Stack $stack): void
+    private function performBinaryOperator(Parser\Operation $operation, Stack $stack): void
     {
         $operator = $operation->value;
 
@@ -116,7 +116,7 @@ final class Calculator
         }
     }
 
-    private function performUnaryOperator(Operation $operation, Stack $stack): void
+    private function performUnaryOperator(Parser\Operation $operation, Stack $stack): void
     {
         $operator = $operation->value;
 
