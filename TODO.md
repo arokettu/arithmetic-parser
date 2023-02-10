@@ -4,4 +4,4 @@
 * All operators and functions should be configurable 
 * Right associative operators
 * Better error handling and reporting
-* Documentation
+* Functions with more arity (maybe)
