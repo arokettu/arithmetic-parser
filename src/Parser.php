@@ -29,7 +29,7 @@ final class Parser
             switch ($lexer->token->type) {
                 // numbers
                 case Token::T_NUMBER:
-                    $operations[] = new Parser\Operation(Parser\OperationType::NUMBER, value: $lexer->token->value);
+                    $operations[] = new Parser\Operation(Parser\OperationType::NUMBER, value: \floatval($lexer->token->value));
                     break;
 
                 // todo: handle postfix operators
@@ -86,7 +86,8 @@ final class Parser
                         if ($lexer->token->value === '-') {
                             // if the next value is a constant, change it
                             if ($lexer->lookahead->type === Token::T_NUMBER) {
-                                $lexer->lookahead->value = '-' . $lexer->lookahead->value;
+                                $lexer->moveNext();
+                                $operations[] = new Parser\Operation(Parser\OperationType::NUMBER, value: -\floatval($lexer->token->value));
                             } else {
                                 $stack->push(new Parser\Operation(Parser\OperationType::UNARY_OPERATOR, value: '-'));
                             }

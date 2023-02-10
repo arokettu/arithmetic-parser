@@ -54,7 +54,7 @@ final class Calculator
         foreach ($this->operations as $operation) {
             switch ($operation->type) {
                 case Parser\OperationType::NUMBER:
-                    $stack->push(\floatval($operation->value));
+                    $stack->push($operation->value);
                     break;
                 case Parser\OperationType::VARIABLE:
                     $varName = $operation->value['normalized'];
