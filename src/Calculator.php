@@ -34,7 +34,7 @@ final class Calculator
             if (!\is_string($name)) {
                 throw new \InvalidArgumentException('Invalid variable name: ' . $name);
             }
-            $normalizedName = NormalizationHelper::normalizeName($name);
+            $normalizedName = Helpers\NormalizationHelper::normalizeName($name);
             if (isset($normalizedVars[$normalizedName])) {
                 throw new \InvalidArgumentException('Duplicate variable name: ' . $name);
             }

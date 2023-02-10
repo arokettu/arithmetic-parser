@@ -40,7 +40,7 @@ final class Parser
                 case Token::T_NAME:
                     $value = [
                         'name' => $lexer->token->value,
-                        'normalized' => NormalizationHelper::normalizeName($lexer->token->value),
+                        'normalized' => Helpers\NormalizationHelper::normalizeName($lexer->token->value),
                     ];
 
                     if ($lexer->lookahead?->type === Token::T_BRACKET_OPEN) {
