@@ -2,7 +2,9 @@
 
 ## 0.x
 
-### next
+### 0.2.0
+
+*Feb 10, 2023*
 
 * Config object
 * ConfigBuilder object
@@ -13,6 +15,6 @@
 
 ### 0.1.0
 
-*Feb 2, 2023*
+*Feb 9, 2023*
 
 Initial release
