@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Calculator;
+use Arokettu\ArithmeticParser\ConfigBuilder;
 use PHPUnit\Framework\TestCase;
 
 class VariableTest extends TestCase
@@ -28,7 +29,7 @@ class VariableTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid variable name: 0');
 
-        Calculator::evaluate('2 + 3', 2, 3);
+        Calculator::evaluate('2 + 3', ConfigBuilder::defaultConfig(), 2, 3);
     }
 
     public function testMissingVar(): void

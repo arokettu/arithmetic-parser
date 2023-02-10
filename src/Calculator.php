@@ -9,21 +9,29 @@ use Ds\Stack;
 final class Calculator
 {
     private readonly array $operations;
+    private readonly Config $config;
 
     public function __construct(
-        Parser\Operation ...$operations,
+        iterable $operations = [],
+        ?Config $config = null,
     ) {
-        $this->operations = $operations;
+        $this->setOperations(...$operations);
+        $this->config = $config ?? ConfigBuilder::defaultConfig();
     }
 
-    public static function parse(string $input): self
+    private function setOperations(Parser\Operation ...$operations): void
     {
-        return new self(...(new Parser())->parse($input));
+        $this->operations = array_values($operations);
     }
 
-    public static function evaluate(string $expression, float ...$vars): float
+    public static function parse(string $input, ?Config $config = null): self
     {
-        return self::parse($expression)->calc(...$vars);
+        return new self((new Parser())->parse($input), $config);
+    }
+
+    public static function evaluate(string $expression, ?Config $config = null, float ...$vars): float
+    {
+        return self::parse($expression, $config)->calc(...$vars);
     }
 
     public function calc(float ...$vars): float
@@ -78,17 +86,12 @@ final class Calculator
 
     private function performFunction(Parser\Operation $operation, Stack $stack): void
     {
-        $function = $operation->value['normalized'];
-
+        $funcName = $operation->value['normalized'];
         $value = $stack->pop();
-
-        switch ($function) {
-            case 'ABS':
-                $stack->push(abs($value));
-                break;
-            default:
-                throw new \RuntimeException("Undefined function: {$operation->value['name']}");
-        }
+        $func =
+            $this->config->functions[$funcName] ??
+            throw new \RuntimeException("Undefined function: {$operation->value['name']}");
+        $stack->push(($func->callable)($value));
     }
 
     private function performBinaryOperator(Parser\Operation $operation, Stack $stack): void
