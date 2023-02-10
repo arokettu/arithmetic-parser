@@ -10,5 +10,9 @@
 /.phpunit.result.cache
 /phpunit.xml
 
+# docs
+/docs/html
+/docs/build
+
 # misc
 /debug
