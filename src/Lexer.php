@@ -7,7 +7,7 @@ namespace Arokettu\ArithmeticParser;
 use Doctrine\Common\Lexer\AbstractLexer;
 
 /**
- * @extends AbstractLexer<Token, string>
+ * @extends AbstractLexer<Lexer\Token, string>
  */
 final class Lexer extends AbstractLexer
 {
@@ -32,23 +32,23 @@ final class Lexer extends AbstractLexer
     /**
      * mixed is for compatibility with lexer 2.x, actually it's string only
      */
-    protected function getType(mixed &$value): Token
+    protected function getType(mixed &$value): Lexer\Token
     {
         switch (true) {
             // brackets
             case $value === '(':
-                return Token::T_BRACKET_OPEN;
+                return Lexer\Token::T_BRACKET_OPEN;
             case $value === ')':
-                return Token::T_BRACKET_CLOSE;
+                return Lexer\Token::T_BRACKET_CLOSE;
             case $value === '+':
             case $value === '-':
             case $value === '*':
             case $value === '/':
-                return Token::T_OPERATOR;
+                return Lexer\Token::T_OPERATOR;
             case is_numeric($value):
-                return Token::T_NUMBER;
+                return Lexer\Token::T_NUMBER;
             case preg_match('/[_a-zA-Z][_a-zA-Z0-9]*/', $value) > 0:
-                return Token::T_NAME;
+                return Lexer\Token::T_NAME;
             default:
                 throw new \RuntimeException('Invalid token: ' . $value);
         }

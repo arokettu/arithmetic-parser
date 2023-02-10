@@ -28,7 +28,7 @@ final class Parser
 
             switch ($lexer->token->type) {
                 // numbers
-                case Token::T_NUMBER:
+                case Lexer\Token::T_NUMBER:
                     $operations[] = new Operation\Number(\floatval($lexer->token->value));
                     break;
 
@@ -37,8 +37,8 @@ final class Parser
                 // todo: handle prefix operators
 
                 // variables and functions
-                case Token::T_NAME:
-                    if ($lexer->lookahead?->type === Token::T_BRACKET_OPEN) {
+                case Lexer\Token::T_NAME:
+                    if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_OPEN) {
                         // function call
                         $stack->push(new Operation\FunctionCall($lexer->token->value));
                     } else {
@@ -47,14 +47,14 @@ final class Parser
                     }
                     break;
 
-                case Token::T_BRACKET_OPEN:
-                    if ($lexer->lookahead?->type === Token::T_BRACKET_CLOSE) {
+                case Lexer\Token::T_BRACKET_OPEN:
+                    if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE) {
                         throw new \RuntimeException('Empty brackets');
                     }
                     $stack->push(new Operation\Bracket());
                     break;
 
-                case Token::T_BRACKET_CLOSE:
+                case Lexer\Token::T_BRACKET_CLOSE:
                     try {
                         $operation = $stack->pop();
 
@@ -68,19 +68,19 @@ final class Parser
                     }
                     break;
 
-                case Token::T_OPERATOR:
+                case Lexer\Token::T_OPERATOR:
                     // unary - and +
                     if (
                         $prevToken === null ||
-                        $prevToken->type === Token::T_BRACKET_OPEN ||
-                        $prevToken->type === Token::T_OPERATOR
+                        $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
+                        $prevToken->type === Lexer\Token::T_OPERATOR
                     ) {
                         if ($lexer->token->value === '+') {
                             break; // unary plus is a noop, drop it
                         }
                         if ($lexer->token->value === '-') {
                             // if the next value is a constant, change it
-                            if ($lexer->lookahead->type === Token::T_NUMBER) {
+                            if ($lexer->lookahead->type === Lexer\Token::T_NUMBER) {
                                 $lexer->moveNext();
                                 $operations[] = new Operation\Number(-\floatval($lexer->token->value));
                             } else {
