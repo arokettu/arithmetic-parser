@@ -17,7 +17,33 @@ final class ConfigBuilder
         // add basic arithmetic functions
         return (new self())
             ->addFunctions(
+                // generic
                 abs: abs(...),
+                exp: exp(...),
+                log: fn (float $num) => log($num),
+                log10: log10(...),
+                sqrt: sqrt(...),
+                // trigonometric functions
+                acos: acos(...),
+                asin: asin(...),
+                atan: atan(...),
+                cos: cos(...),
+                sin: sin(...),
+                tan: tan(...),
+                // hyperbolic functions
+                acosh: acosh(...),
+                asinh: asinh(...),
+                atanh: atanh(...),
+                cosh: cosh(...),
+                sinh: sinh(...),
+                tanh: tanh(...),
+                // rounding
+                ceil: ceil(...),
+                floor: floor(...),
+                round: fn (float $num) => round($num),
+                // conversion
+                deg2rad: deg2rad(...),
+                rad2deg: rad2deg(...),
             );
     }
 
