@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Arokettu\ArithmeticParser\Config;
+namespace Arokettu\ArithmeticParser\Operation;
 
 use Arokettu\ArithmeticParser\Helpers\NameHelper;
 
-final class Func
+final class FunctionCall implements Operation
 {
     public readonly string $name;
     public readonly string $normalizedName;
-    public readonly \Closure $callable;
 
-    public function __construct(string $name, callable $callable)
+    public function __construct(string $name)
     {
         $this->name = $name;
         $this->normalizedName = NameHelper::normalizeFunc($name);
-        $this->callable = $callable(...);
     }
 }

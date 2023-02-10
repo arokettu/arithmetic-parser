@@ -17,7 +17,7 @@ final class Config
     private function setFunctions(Config\Func ...$functions): void
     {
         $this->functions = array_reduce($functions, function (array $fs, Config\Func $f) {
-            $fs[Helpers\NormalizationHelper::normalizeName($f->name)] = $f;
+            $fs[Helpers\NameHelper::normalizeVar($f->name)] = $f;
             return $fs;
         }, []);
     }

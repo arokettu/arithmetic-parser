@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
-use Arokettu\ArithmeticParser\Helpers\NormalizationHelper;
+use Arokettu\ArithmeticParser\Helpers\NameHelper;
 
 final class ConfigBuilder
 {
@@ -83,7 +83,7 @@ final class ConfigBuilder
             if ($function instanceof Config\Func) {
                 $this->addFunction($function);
             } else {
-                $this->addFunctionFromCallable($name, $function);
+                $this->addFunctionFromCallable($name, $function(...));
             }
         }
         return $this;
@@ -94,8 +94,7 @@ final class ConfigBuilder
      */
     public function addFunctionFromCallable(string $name, callable $callable): self
     {
-        $this->functions[Helpers\NormalizationHelper::normalizeName($name)] = new Config\Func($name, $callable(...));
-        return $this;
+        return $this->addFunction(new Config\Func($name, $callable(...)));
     }
 
     /**
@@ -103,7 +102,7 @@ final class ConfigBuilder
      */
     public function addFunction(Config\Func $func): self
     {
-        $this->functions[Helpers\NormalizationHelper::normalizeName($func->name)] = $func;
+        $this->functions[$func->normalizedName] = $func;
         return $this;
     }
 
@@ -114,9 +113,10 @@ final class ConfigBuilder
     {
         foreach ($funcs as $func) {
             if ($func instanceof Config\Func) {
-                $func = $func->name;
+                unset($this->functions[$func->normalizedName]);
+            } else {
+                unset($this->functions[NameHelper::normalizeFunc($func)]);
             }
-            unset($this->functions[NormalizationHelper::normalizeName($func)]);
         }
         return $this;
     }

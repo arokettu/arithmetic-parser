@@ -8,9 +8,16 @@ use Ds\Stack;
 
 final class Calculator
 {
+    /**
+     * @var array<int, Operation\Operation>
+     */
     private readonly array $operations;
     private readonly Config $config;
 
+    /**
+     * @param iterable<int, Operation\Operation> $operations
+     * @param Config|null $config
+     */
     public function __construct(
         iterable $operations = [],
         ?Config $config = null,
@@ -19,7 +26,7 @@ final class Calculator
         $this->config = $config ?? ConfigBuilder::defaultConfig();
     }
 
-    private function setOperations(Parser\Operation ...$operations): void
+    private function setOperations(Operation\Operation ...$operations): void
     {
         $this->operations = array_values($operations);
     }
@@ -42,7 +49,7 @@ final class Calculator
             if (!\is_string($name)) {
                 throw new \InvalidArgumentException('Invalid variable name: ' . $name);
             }
-            $normalizedName = Helpers\NormalizationHelper::normalizeName($name);
+            $normalizedName = Helpers\NameHelper::normalizeVar($name);
             if (isset($normalizedVars[$normalizedName])) {
                 throw new \InvalidArgumentException('Duplicate variable name: ' . $name);
             }
@@ -52,24 +59,23 @@ final class Calculator
         $stack = new Stack();
 
         foreach ($this->operations as $operation) {
-            switch ($operation->type) {
-                case Parser\OperationType::NUMBER:
+            switch (true) {
+                case $operation instanceof Operation\Number:
                     $stack->push($operation->value);
                     break;
-                case Parser\OperationType::VARIABLE:
-                    $varName = $operation->value['normalized'];
-                    if (!isset($normalizedVars[$varName])) {
-                        throw new \RuntimeException("Variable {$operation->value['name']} is not defined");
+                case $operation instanceof Operation\Variable:
+                    if (!isset($normalizedVars[$operation->normalizedName])) {
+                        throw new \RuntimeException("Variable {$operation->name} is not defined");
                     }
-                    $stack->push($normalizedVars[$varName]);
+                    $stack->push($normalizedVars[$operation->normalizedName]);
                     break;
-                case Parser\OperationType::FUNCTION:
+                case $operation instanceof Operation\FunctionCall:
                     $this->performFunction($operation, $stack);
                     break;
-                case Parser\OperationType::BINARY_OPERATOR:
+                case $operation instanceof Operation\BinaryOperator:
                     $this->performBinaryOperator($operation, $stack);
                     break;
-                case Parser\OperationType::UNARY_OPERATOR:
+                case $operation instanceof Operation\UnaryOperator:
                     $this->performUnaryOperator($operation, $stack);
                     break;
                 default:
@@ -84,24 +90,21 @@ final class Calculator
         return $stack->pop();
     }
 
-    private function performFunction(Parser\Operation $operation, Stack $stack): void
+    private function performFunction(Operation\FunctionCall $operation, Stack $stack): void
     {
-        $funcName = $operation->value['normalized'];
         $value = $stack->pop();
         $func =
-            $this->config->functions[$funcName] ??
-            throw new \RuntimeException("Undefined function: {$operation->value['name']}");
+            $this->config->functions[$operation->normalizedName] ??
+            throw new \RuntimeException("Undefined function: {$operation->name}");
         $stack->push(($func->callable)($value));
     }
 
-    private function performBinaryOperator(Parser\Operation $operation, Stack $stack): void
+    private function performBinaryOperator(Operation\BinaryOperator $operation, Stack $stack): void
     {
-        $operator = $operation->value;
-
         $value2 = $stack->pop();
         $value1 = $stack->pop();
 
-        switch ($operator) {
+        switch ($operation->operator) {
             case '+':
                 $stack->push($value1 + $value2);
                 break;
@@ -115,22 +118,20 @@ final class Calculator
                 $stack->push($value1 / $value2);
                 break;
             default:
-                throw new \RuntimeException("Undefined operator: {$operation->value['name']}");
+                throw new \RuntimeException("Undefined operator: {$operation->operator}");
         }
     }
 
-    private function performUnaryOperator(Parser\Operation $operation, Stack $stack): void
+    private function performUnaryOperator(Operation\UnaryOperator $operation, Stack $stack): void
     {
-        $operator = $operation->value;
-
         $value = $stack->pop();
 
-        switch ($operator) {
+        switch ($operation->operator) {
             case '-':
                 $stack->push(-$value);
                 break;
             default:
-                throw new \RuntimeException("Undefined operator: {$operation->value['name']}");
+                throw new \RuntimeException("Undefined operator: {$operation->operator}");
         }
     }
 }
