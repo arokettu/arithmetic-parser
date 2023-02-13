@@ -49,7 +49,7 @@ final class Parser
 
                 case Lexer\Token::T_BRACKET_OPEN:
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE) {
-                        throw new \RuntimeException('Empty brackets');
+                        throw Exceptions\ParseException::fromToken('Empty brackets', $lexer->token);
                     }
                     $stack->push(new Operation\Bracket());
                     break;
@@ -64,12 +64,13 @@ final class Parser
                             $operation = $stack->pop();
                         }
                     } catch (\UnderflowException) {
-                        throw new \RuntimeException('Unbalanced brackets');
+                        throw Exceptions\ParseException::fromToken('Unmatched closing bracket', $lexer->token);
                     }
                     break;
 
                 case Lexer\Token::T_OPERATOR:
-                    // unary - and +
+                    // check if binary operator has its first argument
+                    // also handle unary - and + here
                     if (
                         $prevToken === null ||
                         $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
@@ -89,7 +90,21 @@ final class Parser
                             break;
                         }
 
-                        throw new \RuntimeException('Binary operator missing its first argument');
+                        throw Exceptions\ParseException::fromToken(
+                            "Binary operator ({$lexer->token->value}) missing first argument",
+                            $lexer->token
+                        );
+                    }
+
+                    // check if binary operator has its second argument
+                    if (
+                        $lexer->lookahead === null ||
+                        $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE
+                    ) {
+                        throw Exceptions\ParseException::fromToken(
+                            "Binary operator ({$lexer->token->value}) missing second argument",
+                            $lexer->token
+                        );
                     }
 
                     // regular operators

@@ -50,7 +50,7 @@ final class Lexer extends AbstractLexer
             case preg_match('/[_a-zA-Z][_a-zA-Z0-9]*/', $value) > 0:
                 return Lexer\Token::T_NAME;
             default:
-                throw new \RuntimeException('Invalid token: ' . $value);
+                throw new Exceptions\ParseException('Unexpected input: ' . $value);
         }
     }
 }
