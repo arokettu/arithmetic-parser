@@ -85,7 +85,7 @@ class ParserEdgeCasesTest extends TestCase
     public function testInvalidToken(): void
     {
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unexpected input: %');
+        $this->expectExceptionMessage('Unexpected "%" at position 2');
 
         (new Parser())->parse('1 % 2');
     }

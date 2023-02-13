@@ -10,6 +10,7 @@ final class Parser
 {
     /**
      * @return array<int, Operation\Operation>
+     * @throws Exceptions\ParseException
      */
     public function parse(string $input): array
     {
@@ -27,6 +28,10 @@ final class Parser
             $lexer->moveNext();
 
             switch ($lexer->token->type) {
+                // error
+                case Lexer\Token::T_UNRECOGNIZED:
+                    throw Exceptions\ParseException::fromToken(sprintf('Unexpected "%s"', $lexer->token->value), $lexer->token);
+
                 // numbers
                 case Lexer\Token::T_NUMBER:
                     $operations[] = new Operation\Number(\floatval($lexer->token->value));
