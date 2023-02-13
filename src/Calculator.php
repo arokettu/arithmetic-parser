@@ -31,27 +31,37 @@ final class Calculator
         $this->operations = array_values($operations);
     }
 
+    /**
+     * @throws Exceptions\ParseException
+     */
     public static function parse(string $input, ?Config $config = null): self
     {
         return new self((new Parser())->parse($input), $config);
     }
 
+    /**
+     * @throws Exceptions\ParseException
+     * @throws Exceptions\CalcCallException
+     */
     public static function evaluate(string $expression, ?Config $config = null, float ...$vars): float
     {
         return self::parse($expression, $config)->calc(...$vars);
     }
 
+    /**
+     * @throws Exceptions\CalcCallException
+     */
     public function calc(float ...$vars): float
     {
         $normalizedVars = [];
 
         foreach ($vars as $name => $value) {
             if (!\is_string($name)) {
-                throw new \InvalidArgumentException('Invalid variable name: ' . $name);
+                throw new Exceptions\CalcCallException('Invalid variable name: ' . $name);
             }
             $normalizedName = Helpers\NameHelper::normalizeVar($name);
             if (isset($normalizedVars[$normalizedName])) {
-                throw new \InvalidArgumentException('Duplicate variable name: ' . $name);
+                throw new Exceptions\CalcCallException('Duplicate variable name: ' . $name);
             }
             $normalizedVars[$normalizedName] = $value;
         }
@@ -65,7 +75,7 @@ final class Calculator
                     break;
                 case $operation instanceof Operation\Variable:
                     if (!isset($normalizedVars[$operation->normalizedName])) {
-                        throw new \RuntimeException("Variable {$operation->name} is not defined");
+                        throw new Exceptions\CalcCallException("Variable {$operation->name} is not defined");
                     }
                     $stack->push($normalizedVars[$operation->normalizedName]);
                     break;
@@ -79,12 +89,12 @@ final class Calculator
                     $this->performUnaryOperator($operation, $stack);
                     break;
                 default:
-                    throw new \RuntimeException('Invalid operator');
+                    throw new Exceptions\CalcCallException('Invalid operation: ' . get_debug_type($operation));
             }
         }
 
         if (\count($stack) !== 1) {
-            throw new \RuntimeException('Operator sequence is wrong');
+            throw new Exceptions\CalcCallException('Operation sequence is invalid');
         }
 
         return $stack->pop();
@@ -95,7 +105,7 @@ final class Calculator
         $value = $stack->pop();
         $func =
             $this->config->functions[$operation->normalizedName] ??
-            throw new \RuntimeException("Undefined function: {$operation->name}");
+            throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
         $stack->push(($func->callable)($value));
     }
 
@@ -118,7 +128,7 @@ final class Calculator
                 $stack->push($value1 / $value2);
                 break;
             default:
-                throw new \RuntimeException("Undefined operator: {$operation->operator}");
+                throw new Exceptions\CalcCallException("Undefined binary operator: {$operation->operator}");
         }
     }
 
@@ -131,7 +141,7 @@ final class Calculator
                 $stack->push(-$value);
                 break;
             default:
-                throw new \RuntimeException("Undefined operator: {$operation->operator}");
+                throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");
         }
     }
 }

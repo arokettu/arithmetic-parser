@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Calculator;
+use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
 use PHPUnit\Framework\TestCase;
 
 class FunctionTest extends TestCase
@@ -17,7 +18,7 @@ class FunctionTest extends TestCase
 
     public function testMissingFunc(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Undefined function: MyFunc');
 
         Calculator::evaluate('MyFunc(1) + 3');
