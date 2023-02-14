@@ -2,6 +2,10 @@
 
 ## 0.x
 
+### next
+
+* Parser now also returns lists of variables and functions that are used in the expression
+
 ### 0.3.0
 
 *Feb 13, 2023*
