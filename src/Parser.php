@@ -9,10 +9,9 @@ use Ds\Stack;
 final class Parser
 {
     /**
-     * @return array<int, Operation\Operation>
      * @throws Exceptions\ParseException
      */
-    public function parse(string $input): array
+    public function parse(string $input): Parser\Parsed
     {
         $lexer = new Lexer();
         $lexer->setInput($input);
@@ -20,6 +19,8 @@ final class Parser
 
         /** @var Stack<Operation\Operation> $stack */
         $stack = new Stack();
+        $funcs = [];
+        $vars = [];
         $operations = [];
 
         while ($lexer->lookahead) {
@@ -30,7 +31,10 @@ final class Parser
             switch ($lexer->token->type) {
                 // error
                 case Lexer\Token::T_UNRECOGNIZED:
-                    throw Exceptions\ParseException::fromToken(sprintf('Unexpected "%s"', $lexer->token->value), $lexer->token);
+                    throw Exceptions\ParseException::fromToken(
+                        sprintf('Unexpected "%s"', $lexer->token->value),
+                        $lexer->token
+                    );
 
                 // numbers
                 case Lexer\Token::T_NUMBER:
@@ -45,10 +49,12 @@ final class Parser
                 case Lexer\Token::T_NAME:
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_OPEN) {
                         // function call
-                        $stack->push(new Operation\FunctionCall($lexer->token->value));
+                        $stack->push($func = new Operation\FunctionCall($lexer->token->value));
+                        $funcs[$func->normalizedName] = $func;
                     } else {
                         // variable name
-                        $operations[] = new Operation\Variable($lexer->token->value);
+                        $operations[] = ($var = new Operation\Variable($lexer->token->value));
+                        $vars[$var->normalizedName] = $var;
                     }
                     break;
 
@@ -154,7 +160,11 @@ final class Parser
             $operations[] = $op;
         }
 
-        return $operations;
+        return new Parser\Parsed(
+            operations: $operations,
+            variables: $vars,
+            functions: $funcs,
+        );
     }
 
     private function getPriority(string $operator): int

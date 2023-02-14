@@ -28,6 +28,7 @@ final class Calculator
 
     private function setOperations(Operation\Operation ...$operations): void
     {
+        /** @psalm-suppress InaccessibleProperty This method is called from the constructor only */
         $this->operations = array_values($operations);
     }
 
@@ -36,7 +37,7 @@ final class Calculator
      */
     public static function parse(string $input, ?Config $config = null): self
     {
-        return new self((new Parser())->parse($input), $config);
+        return new self((new Parser())->parse($input)->operations, $config);
     }
 
     /**

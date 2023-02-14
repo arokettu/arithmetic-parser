@@ -47,6 +47,13 @@ final class ConfigBuilder
             );
     }
 
+    public static function fromConfig(Config $config): self
+    {
+        $builder = new self();
+        $builder->functions = $config->functions;
+        return $builder;
+    }
+
     public static function defaultConfig(): Config
     {
         return self::$defaultConfig ??= self::default()->build();
