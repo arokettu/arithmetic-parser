@@ -9,9 +9,9 @@ use Arokettu\ArithmeticParser\Operation;
 final class Parsed
 {
     /**
-     * @param array<int, Operation\Operation> $operations
-     * @param array<string, Operation\Variable> $variables List of normalized function names
-     * @param array<string, Operation\FunctionCall> $functions List of normalized variable names
+     * @param array<int, Operation\Operation> $operations List of operations for the stack machine in the required order
+     * @param array<string, Operation\Variable> $variables List of required variables: normalized name => Op object
+     * @param array<string, Operation\FunctionCall> $functions List of required functions: normalized name => Op object
      */
     public function __construct(
         public readonly array $operations,
