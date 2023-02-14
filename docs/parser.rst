@@ -26,7 +26,7 @@ Example:
 
     $parser = new Parser();
 
-    $rpn = $parser->parse('x + 3 * y'); // rpn is x 3 y * +
+    $rpn = $parser->parse('x + 3 * y')->operations; // rpn is x 3 y * +
 
     $rpn == [
         new Variable('x'),
