@@ -16,6 +16,9 @@ final class NameHelper
 
     public static function normalizeFunc(string $name): string
     {
+        if (str_starts_with($name, '@')) {
+            $name = substr($name, 1);
+        }
         return strtoupper($name);
     }
 

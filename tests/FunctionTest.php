@@ -14,6 +14,9 @@ class FunctionTest extends TestCase
     {
         self::assertEquals(2, Calculator::evaluate('abs(1 - 3)'));
         self::assertEquals(2, Calculator::evaluate('abs(3 - 1)'));
+
+        // prefix
+        self::assertEquals(2, Calculator::evaluate('@abs(3 - 1)'));
     }
 
     public function testMissingFunc(): void
