@@ -28,7 +28,7 @@ class ParserEdgeCasesTest extends TestCase
 
     public function testExtraOpenBracket(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(ParseException::class);
         $this->expectExceptionMessage('Probably invalid operator combination');
 
         (new Parser())->parse('1 + abs(');
