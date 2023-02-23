@@ -17,4 +17,5 @@ Evaluates the expression with given variables (if any).
 ``Calculator::evaluate()``
 ==========================
 
-``Calculator::evaluate($expression, ...$vars)`` is a shorthand for ``Calculator::parse($expression)->calc(...$vars)``
+``Calculator::evaluate($expression, $config, ...$vars)`` is a shorthand for
+``Calculator::parse($expression, $config)->calc(...$vars)``

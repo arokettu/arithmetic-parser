@@ -1,34 +1,20 @@
 Configuration
 #############
 
-``Arokettu\ArithmeticParser\Config`` and ``Arokettu\ArithmeticParser\ConfigBuilder``
-classes are used to configure the calculator and the parser (in future).
+.. highlight:: php
+
+``Arokettu\ArithmeticParser\Config`` class is used to configure the calculator and the parser (in future).
 
 Config is an immutable object and ConfigBuilder is a user-friendly way to set up options.
 
-ConfigBuilder
-=============
-
-``build()``
------------
-
-A method to create a Config object with configured parameters.
-
-``ConfigBuilder::default()``
-----------------------------
+``Config::default()``
+=====================
 
 The default preset used when no config is specified.
-
-``ConfigBuilder::defaultConfig()``
-----------------------------------
-
-A prebuilt instance of the Config object for the default preset.
-A shortcut for ``ConfigBuilder::default()->build()`` with a cached instance.
 
 Functions
 =========
 
-The only configurable thing for now is a set of functions.
 The function must be a callable that accepts a single float argument.
 
 Default functions:
@@ -57,9 +43,52 @@ Default functions:
 
 You can:
 
-* Replace functions with your own list:
-  ``$builder->setFunctions(['myfunc2' => fn ($a) => a ** 2]);``
-* Add new functions:
-  ``$builder->addFunctions(['myfunc3' => fn ($a) => a ** 3]);``
-* Remove functions:
-  ``$builder->removeFunctions('acos', 'asin');``
+* Replace functions with your own list::
+
+    <?php
+    $config->setFunctions(myfunc2: fn ($a) => a ** 2);
+* Add new functions::
+
+    <?php
+    $config->addFunctions(myfunc3: fn ($a) => a ** 3);
+* Remove functions::
+
+    <?php
+    $config->removeFunctions('acos', 'asin');
+
+Operators
+=========
+
+Operators can be unary and binary.
+Operator symbol can be any string without digits.
+Be wary when using latin character based operators, they are case-sensitive and may shadow variables and functions.
+
+Default operators:
+
+* ``+``, ``-`` in both unary and binary form. They are built-in and are not configurable.
+* ``*``, ``/``.
+
+You can:
+
+* Replace operators with your own list::
+
+    <?php
+    $config->setOperators(
+        new BinaryOperator('×', fn ($a, $b) => $a * $b, BinaryOperator::PRIORITY_MUL),
+        new BinaryOperator('÷', fn ($a, $b) => $a / $b, BinaryOperator::PRIORITY_MUL),
+    );
+
+* Add new operators::
+
+    <?php
+    // assume you have factorial defined
+    $config->addOperators(
+        new BinaryOperator('^', pow(...), BinaryOperator::PRIORITY_POW, BinaryAssoc::RIGHT),
+        new UnaryOperator('!', factorial(...), UnaryPos::POSTFIX),
+    );
+
+* Remove operators::
+
+    <?php
+    // you cannot divide by zero if you cannot divide
+    $config->removeOperators('/');
