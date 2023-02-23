@@ -10,6 +10,26 @@ use PHPUnit\Framework\TestCase;
 
 class BinaryOperatorsTest extends TestCase
 {
+    public function testOperators(): void
+    {
+        self::assertEquals(2 * 3, Calculator::evaluate('2 * 3'));
+        self::assertEquals(2 / 3, Calculator::evaluate('2 / 3'));
+    }
+
+    public function testDivByZero(): void
+    {
+        $this->expectException(\DivisionByZeroError::class);
+
+        Calculator::evaluate('1/0');
+    }
+
+    public function testPriorityAndBrackets(): void
+    {
+        self::assertEquals(6, Calculator::evaluate('2 + 2 * 2'));
+        self::assertEquals(8, Calculator::evaluate('(2 + 2) * 2'));
+        self::assertEquals(6, Calculator::evaluate('2 + (2 * 2)'));
+    }
+
     public function testLeftAssociative(): void
     {
         $config = Config::default()->addOperator(
