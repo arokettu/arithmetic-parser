@@ -37,7 +37,7 @@ final class Calculator
      */
     public static function parse(string $input, ?Config $config = null): self
     {
-        return new self((new Parser())->parse($input)->operations, $config);
+        return new self((new Parser($config))->parse($input)->operations, $config);
     }
 
     /**
