@@ -2,9 +2,14 @@
 
 ## 0.x
 
-### next
+### 0.4.0 "RC1"
+
+*Feb 23, 2023*
 
 * Parser now also returns lists of variables and functions that are used in the expression
+* Custom binary operators
+* Custom unary operators
+* ConfigBuilder was removed 
 
 ### 0.3.0
 
