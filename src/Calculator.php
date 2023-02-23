@@ -23,7 +23,7 @@ final class Calculator
         ?Config $config = null,
     ) {
         $this->setOperations(...$operations);
-        $this->config = $config ?? ConfigBuilder::defaultConfig();
+        $this->config = $config ? clone $config : Config::default();
     }
 
     private function setOperations(Operation\Operation ...$operations): void
@@ -105,7 +105,7 @@ final class Calculator
     {
         $value = $stack->pop();
         $func =
-            $this->config->functions[$operation->normalizedName] ??
+            $this->config->getFunctions()[$operation->normalizedName] ??
             throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
         $stack->push(($func->callable)($value));
     }
@@ -122,13 +122,12 @@ final class Calculator
             case '-':
                 $stack->push($value1 - $value2);
                 break;
-            case '*':
-                $stack->push($value1 * $value2);
-                break;
-            case '/':
-                $stack->push($value1 / $value2);
-                break;
             default:
+                $operator = $this->config->getOperators()[$operation->operator] ?? null;
+                if ($operator instanceof Config\BinaryOperator) {
+                    $stack->push(($operator->callable)($value1, $value2));
+                    break;
+                }
                 throw new Exceptions\CalcCallException("Undefined binary operator: {$operation->operator}");
         }
     }

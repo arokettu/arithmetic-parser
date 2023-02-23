@@ -8,12 +8,19 @@ use Ds\Stack;
 
 final class Parser
 {
+    private Config $config;
+
+    public function __construct(?Config $config = null)
+    {
+        $this->config = $config ? clone $config : Config::default();
+    }
+
     /**
      * @throws Exceptions\ParseException
      */
     public function parse(string $input): Parser\Parsed
     {
-        $lexer = new Lexer();
+        $lexer = new Lexer($this->config);
         $lexer->setInput($input);
         $lexer->moveNext();
 
@@ -40,10 +47,6 @@ final class Parser
                 case Lexer\Token::T_NUMBER:
                     $operations[] = new Operation\Number(\floatval($lexer->token->value));
                     break;
-
-                // todo: handle postfix operators
-
-                // todo: handle prefix operators
 
                 // variables and functions
                 case Lexer\Token::T_NAME:
@@ -80,71 +83,95 @@ final class Parser
                     break;
 
                 case Lexer\Token::T_OPERATOR:
-                    // check if binary operator has its first argument
-                    // also handle unary - and + here
-                    if (
-                        $prevToken === null ||
-                        $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
-                        $prevToken->type === Lexer\Token::T_OPERATOR
-                    ) {
-                        if ($lexer->token->value === '+') {
-                            break; // unary plus is a noop, drop it
-                        }
-                        if ($lexer->token->value === '-') {
-                            // if the next value is a constant, change it
-                            if ($lexer->lookahead->type === Lexer\Token::T_NUMBER) {
-                                $lexer->moveNext();
-                                $operations[] = new Operation\Number(-\floatval($lexer->token->value));
-                            } else {
-                                $stack->push(new Operation\UnaryOperator('-'));
+                    if ($lexer->token->value === '+' || $lexer->token->value === '-') {
+                        $operator = null; // special handling
+                    } else {
+                        $operator = $this->config->getOperators()[$lexer->token->value] ??
+                            throw Exceptions\ParseException::fromToken(
+                                'Unknown operator ' . $lexer->token->value,
+                                $lexer->token
+                            );
+                    }
+
+                    if ($operator instanceof Config\UnaryOperator) {
+                        // todo: handle postfix operators
+                        // todo: handle prefix operators
+                        throw new \LogicException('TODO');
+                    }
+
+                    if ($operator instanceof Config\BinaryOperator || $operator === null) {
+                        // check if binary operator has its first argument
+                        // also handle unary - and + here
+                        if (
+                            $prevToken === null ||
+                            $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
+                            $prevToken->type === Lexer\Token::T_OPERATOR
+                        ) {
+                            if ($lexer->token->value === '+') {
+                                break; // unary plus is a noop, drop it
                             }
-                            break;
+                            if ($lexer->token->value === '-') {
+                                // if the next value is a constant, change it
+                                if ($lexer->lookahead->type === Lexer\Token::T_NUMBER) {
+                                    $lexer->moveNext();
+                                    $operations[] = new Operation\Number(-\floatval($lexer->token->value));
+                                } else {
+                                    $stack->push(new Operation\UnaryOperator('-'));
+                                }
+                                break;
+                            }
+
+                            throw Exceptions\ParseException::fromToken(
+                                "Binary operator ({$lexer->token->value}) missing first argument",
+                                $lexer->token
+                            );
                         }
 
-                        throw Exceptions\ParseException::fromToken(
-                            "Binary operator ({$lexer->token->value}) missing first argument",
-                            $lexer->token
-                        );
-                    }
+                        // check if binary operator has its second argument
+                        if (
+                            $lexer->lookahead === null ||
+                            $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE
+                        ) {
+                            throw Exceptions\ParseException::fromToken(
+                                "Binary operator ({$lexer->token->value}) missing second argument",
+                                $lexer->token
+                            );
+                        }
 
-                    // check if binary operator has its second argument
-                    if (
-                        $lexer->lookahead === null ||
-                        $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE
-                    ) {
-                        throw Exceptions\ParseException::fromToken(
-                            "Binary operator ({$lexer->token->value}) missing second argument",
-                            $lexer->token
-                        );
-                    }
+                        // regular operators
+                        $priority = $operator?->priority ?? Config\BinaryOperator::PRIORITY_ADD;
+                        $association = $operator?->association ?? Config\Association::LEFT;
 
-                    // regular operators
-                    $priority = $this->getPriority($lexer->token->value);
-
-                    while (\count($stack) > 0) {
-                        $stackTop = $stack->peek();
-                        switch (true) {
-                            case $stackTop instanceof Operation\FunctionCall:
-                                $operations[] = $stack->pop();
-                                continue 2; // continue while
-                            case $stackTop instanceof Operation\BinaryOperator:
-                                $stackTopPriority = $this->getPriority($stackTop->operator);
-                                if ($stackTopPriority >= $priority) {
+                        while (\count($stack) > 0) {
+                            $stackTop = $stack->peek();
+                            switch (true) {
+                                case $stackTop instanceof Operation\FunctionCall:
                                     $operations[] = $stack->pop();
                                     continue 2; // continue while
-                                }
-                                break 2; // break while
-                            default:
-                                break 2; // break while
+                                case $stackTop instanceof Operation\BinaryOperator:
+                                    $stackTopOperator = $this->config->getOperators()[$stackTop->operator] ?? null;
+                                    $stackTopPriority = $stackTopOperator?->priority ??
+                                        Config\BinaryOperator::PRIORITY_ADD;
+                                    if (
+                                        $stackTopPriority > $priority ||
+                                        ($stackTopPriority === $priority && $association === Config\Association::LEFT)
+                                    ) {
+                                        $operations[] = $stack->pop();
+                                        continue 2; // continue while
+                                    }
+                                    break 2; // break while
+                                default:
+                                    break 2; // break while
+                            }
                         }
-                    }
 
-                    $stack->push(new Operation\BinaryOperator($lexer->token->value));
+                        $stack->push(new Operation\BinaryOperator($lexer->token->value));
 
-                    break;
+                        break;
+                    } // binary operator
 
                 default:
-                    throw new \RuntimeException('Unexpected token');
+                    throw Exceptions\ParseException::fromToken('Unexpected token', $lexer->token);
             }
         }
 
@@ -155,7 +182,7 @@ final class Parser
                 !($op instanceof Operation\UnaryOperator) &&
                 !($op instanceof Operation\FunctionCall)
             ) {
-                throw new \RuntimeException('Probably invalid operator combination');
+                throw new Exceptions\ParseException('Probably invalid operator combination');
             }
             $operations[] = $op;
         }
@@ -167,11 +194,19 @@ final class Parser
         );
     }
 
-    private function getPriority(string $operator): int
+    private function getPriority(string $symbol): int
     {
-        return match ($operator) {
-            '+', '-' => 1,
-            '*', '/' => 2,
-        };
+        if ($symbol === '+' || $symbol === '-') {
+            return Config\BinaryOperator::PRIORITY_ADD;
+        }
+
+        $operator = $this->config->getOperators()[$symbol] ??
+            throw new Exceptions\ParseException('Misconfigured binary operator: ' . $symbol);
+
+        if ($operator instanceof Config\BinaryOperator) {
+            return $operator->priority;
+        }
+
+        throw new Exceptions\ParseException("Operator {$symbol} is not binary");
     }
 }

@@ -18,4 +18,11 @@ final class NameHelper
     {
         return strtoupper($name);
     }
+
+    public static function assertName(string $normalizedName): void
+    {
+        if (!preg_match('/^[_A-Z][_A-Z0-9]*$/', $normalizedName)) {
+            throw new \InvalidArgumentException('Invalid function name: ' . $normalizedName);
+        }
+    }
 }

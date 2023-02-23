@@ -4,21 +4,174 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use Arokettu\ArithmeticParser\Helpers\NameHelper;
+
 final class Config
 {
-    /** @var array<string, Config\Func> */
-    public readonly array $functions;
+    private static ?Config $default = null;
 
-    public function __construct(iterable $functions = [])
+    private array $functions = [];
+    private array $operators = [];
+
+    private static function buildDefault(): self
     {
-        $this->setFunctions(...$functions);
+        // add basic arithmetic functions
+        return (new self())
+            ->addFunctions(
+                // generic
+                abs: abs(...),
+                exp: exp(...),
+                log: fn (float $num) => log($num),
+                log10: log10(...),
+                sqrt: sqrt(...),
+                // trigonometric functions
+                acos: acos(...),
+                asin: asin(...),
+                atan: atan(...),
+                cos: cos(...),
+                sin: sin(...),
+                tan: tan(...),
+                // hyperbolic functions
+                acosh: acosh(...),
+                asinh: asinh(...),
+                atanh: atanh(...),
+                cosh: cosh(...),
+                sinh: sinh(...),
+                tanh: tanh(...),
+                // rounding
+                ceil: ceil(...),
+                floor: floor(...),
+                round: fn (float $num) => round($num),
+                // conversion
+                deg2rad: deg2rad(...),
+                rad2deg: rad2deg(...),
+            )->addOperators(
+                new Config\BinaryOperator(
+                    '*',
+                    fn (float $a, float $b): float => $a * $b,
+                    Config\BinaryOperator::PRIORITY_MUL,
+                    Config\Association::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '/',
+                    fn (float $a, float $b): float => $a / $b,
+                    Config\BinaryOperator::PRIORITY_MUL,
+                    Config\Association::LEFT,
+                ),
+            );
     }
 
-    private function setFunctions(Config\Func ...$functions): void
+    public static function default(): Config
     {
-        $this->functions = array_reduce($functions, function (array $fs, Config\Func $f) {
-            $fs[Helpers\NameHelper::normalizeVar($f->name)] = $f;
-            return $fs;
-        }, []);
+        return clone (self::$default ??= self::buildDefault());
+    }
+
+    /**
+     * @return $this
+     */
+    public function setFunctions(callable|Config\Func ...$functions): self
+    {
+        $this->functions = [];
+        return $this->addFunctions(...$functions);
+    }
+
+    /**
+     * @return array<string, Config\Func>
+     */
+    public function getFunctions(): array
+    {
+        return $this->functions;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addFunctions(callable|Config\Func ...$functions): self
+    {
+        foreach ($functions as $name => $function) {
+            if ($function instanceof Config\Func) {
+                $this->addFunction($function);
+            } else {
+                $this->addFunctionFromCallable($name, $function(...));
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addFunctionFromCallable(string $name, callable $callable): self
+    {
+        return $this->addFunction(new Config\Func($name, $callable(...)));
+    }
+
+    /**
+     * @return $this
+     */
+    public function addFunction(Config\Func $func): self
+    {
+        $this->functions[$func->normalizedName] = $func;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function removeFunctions(string ...$funcs): self
+    {
+        foreach ($funcs as $func) {
+            unset($this->functions[NameHelper::normalizeFunc($func)]);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setOperators(Config\Operator ...$operators): self
+    {
+        $this->operators = [];
+        return $this->addOperators(...$operators);
+    }
+
+    /**
+     * @return array<string, Config\Operator>
+     */
+    public function getOperators(): array
+    {
+        return $this->operators;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addOperators(Config\Operator ...$operators): self
+    {
+        foreach ($operators as $operator) {
+            $this->addOperator($operator);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addOperator(Config\BinaryOperator $operator): self
+    {
+        // this method also does a narrower type check for unrecognized operator classes
+        $this->operators[$operator->symbol] = $operator;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function removeOperators(string ...$operators): self
+    {
+        foreach ($operators as $operator) {
+            unset($this->operators[$operator]);
+        }
+        return $this;
     }
 }
