@@ -137,6 +137,9 @@ final class Calculator
         $value = $stack->pop();
 
         switch ($operation->operator) {
+            case '+':
+                $stack->push($value);
+                break;
             case '-':
                 $stack->push(-$value);
                 break;
