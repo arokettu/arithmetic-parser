@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
-use Arokettu\ArithmeticParser\Lexer\Token;
 use Doctrine\Common\Lexer\AbstractLexer;
 
 /**
@@ -64,7 +63,10 @@ final class Lexer extends AbstractLexer
                 => Lexer\Token::T_BINARY_OPERATOR,
             isset($operators[$value]) => match (true) {
                 $operators[$value] instanceof Config\BinaryOperator => Lexer\Token::T_BINARY_OPERATOR,
-                $operators[$value] instanceof Config\UnaryOperator => Lexer\Token::T_UNARY_OPERATOR,
+                $operators[$value] instanceof Config\UnaryOperator => match ($operators[$value]->position) {
+                    Config\UnaryPos::PREFIX => Lexer\Token::T_UNARY_PREFIX_OPERATOR,
+                    Config\UnaryPos::POSTFIX => Lexer\Token::T_UNARY_POSTFIX_OPERATOR,
+                },
                 default => Lexer\Token::T_UNRECOGNIZED,
             },
             is_numeric($value) => Lexer\Token::T_NUMBER,
