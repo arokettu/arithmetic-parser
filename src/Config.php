@@ -50,13 +50,13 @@ final class Config
                     '*',
                     fn (float $a, float $b): float => $a * $b,
                     Config\BinaryOperator::PRIORITY_MUL,
-                    Config\Association::LEFT,
+                    Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '/',
                     fn (float $a, float $b): float => $a / $b,
                     Config\BinaryOperator::PRIORITY_MUL,
-                    Config\Association::LEFT,
+                    Config\BinaryAssoc::LEFT,
                 ),
             );
     }
@@ -157,7 +157,7 @@ final class Config
     /**
      * @return $this
      */
-    public function addOperator(Config\BinaryOperator $operator): self
+    public function addOperator(Config\BinaryOperator|Config\UnaryOperator $operator): self
     {
         // this method also does a narrower type check for unrecognized operator classes
         $this->operators[$operator->symbol] = $operator;

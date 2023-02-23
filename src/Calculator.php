@@ -141,6 +141,11 @@ final class Calculator
                 $stack->push(-$value);
                 break;
             default:
+                $operator = $this->config->getOperators()[$operation->operator] ?? null;
+                if ($operator instanceof Config\UnaryOperator) {
+                    $stack->push(($operator->callable)($value));
+                    break;
+                }
                 throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");
         }
     }

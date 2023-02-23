@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser\Tests;
 
+use Arokettu\ArithmeticParser\Config;
+use Arokettu\ArithmeticParser\Config\UnaryOperator;
+use Arokettu\ArithmeticParser\Config\UnaryPos;
 use Arokettu\ArithmeticParser\Exceptions\ParseException;
 use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
@@ -61,7 +64,7 @@ class ParserEdgeCasesTest extends TestCase
     public function testInvalidUnaryAfterBinary(): void
     {
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Binary operator (*) missing first argument at position 4');
+        $this->expectExceptionMessage('Binary operator (*) missing second argument at position 2');
 
         (new Parser())->parse('5 * * 5');
     }
@@ -88,5 +91,29 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Unexpected "%" at position 2');
 
         (new Parser())->parse('1 % 2');
+    }
+
+    public function testWrongOrderPostfixUnary(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unary postfix operator (~) missing its argument at position 0');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::POSTFIX),
+        );
+
+        (new Parser($config))->parse('~5');
+    }
+
+    public function testWrongOrderPrefixUnary(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unary prefix operator (~) missing its argument at position 1');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('5~');
     }
 }

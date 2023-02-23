@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use Arokettu\ArithmeticParser\Config\UnaryPos;
 use Ds\Stack;
 
 final class Parser
@@ -82,7 +83,45 @@ final class Parser
                     }
                     break;
 
-                case Lexer\Token::T_OPERATOR:
+                case Lexer\Token::T_UNARY_OPERATOR:
+                    $operator = $this->config->getOperators()[$lexer->token->value] ?? null;
+
+                    if ($operator instanceof Config\UnaryOperator) {
+                        if ($operator->position === UnaryPos::PREFIX) {
+                            if (
+                                $lexer->lookahead === null ||
+                                $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE ||
+                                $lexer->lookahead->type === Lexer\Token::T_BINARY_OPERATOR
+                            ) {
+                                throw Exceptions\ParseException::fromToken(
+                                    "Unary prefix operator ({$lexer->token->value}) missing its argument",
+                                    $lexer->token
+                                );
+                            }
+                            $stack->push(new Operation\UnaryOperator($lexer->token->value));
+                        } else { // UnaryPos::POSTFIX
+                            if (
+                                $prevToken === null ||
+                                $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
+                                $prevToken->type === Lexer\Token::T_BINARY_OPERATOR
+                            ) {
+                                throw Exceptions\ParseException::fromToken(
+                                    "Unary postfix operator ({$lexer->token->value}) missing its argument",
+                                    $lexer->token
+                                );
+                            }
+                            $operations[] = new Operation\UnaryOperator($lexer->token->value);
+                        }
+
+                        break;
+                    }
+
+                    throw Exceptions\ParseException::fromToken(
+                        'Unknown unary operator ' . $lexer->token->value,
+                        $lexer->token
+                    );
+
+                case Lexer\Token::T_BINARY_OPERATOR:
                     if ($lexer->token->value === '+' || $lexer->token->value === '-') {
                         $operator = null; // special handling
                     } else {
@@ -93,19 +132,13 @@ final class Parser
                             );
                     }
 
-                    if ($operator instanceof Config\UnaryOperator) {
-                        // todo: handle postfix operators
-                        // todo: handle prefix operators
-                        throw new \LogicException('TODO');
-                    }
-
                     if ($operator instanceof Config\BinaryOperator || $operator === null) {
                         // check if binary operator has its first argument
                         // also handle unary - and + here
                         if (
                             $prevToken === null ||
                             $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
-                            $prevToken->type === Lexer\Token::T_OPERATOR
+                            $prevToken->type === Lexer\Token::T_BINARY_OPERATOR
                         ) {
                             if ($lexer->token->value === '+') {
                                 break; // unary plus is a noop, drop it
@@ -130,7 +163,8 @@ final class Parser
                         // check if binary operator has its second argument
                         if (
                             $lexer->lookahead === null ||
-                            $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE
+                            $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE ||
+                            $lexer->lookahead->type === Lexer\Token::T_BINARY_OPERATOR
                         ) {
                             throw Exceptions\ParseException::fromToken(
                                 "Binary operator ({$lexer->token->value}) missing second argument",
@@ -140,7 +174,7 @@ final class Parser
 
                         // regular operators
                         $priority = $operator?->priority ?? Config\BinaryOperator::PRIORITY_ADD;
-                        $association = $operator?->association ?? Config\Association::LEFT;
+                        $association = $operator?->association ?? Config\BinaryAssoc::LEFT;
 
                         while (\count($stack) > 0) {
                             $stackTop = $stack->peek();
@@ -154,7 +188,7 @@ final class Parser
                                         Config\BinaryOperator::PRIORITY_ADD;
                                     if (
                                         $stackTopPriority > $priority ||
-                                        ($stackTopPriority === $priority && $association === Config\Association::LEFT)
+                                        ($stackTopPriority === $priority && $association === Config\BinaryAssoc::LEFT)
                                     ) {
                                         $operations[] = $stack->pop();
                                         continue 2; // continue while
@@ -169,6 +203,8 @@ final class Parser
 
                         break;
                     } // binary operator
+
+                    throw Exceptions\ParseException::fromToken('Unknown binary operator', $lexer->token);
 
                 default:
                     throw Exceptions\ParseException::fromToken('Unexpected token', $lexer->token);

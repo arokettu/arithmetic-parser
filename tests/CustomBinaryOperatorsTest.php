@@ -13,7 +13,7 @@ class CustomBinaryOperatorsTest extends TestCase
     public function testLeftAssociative(): void
     {
         $config = Config::default()->addOperator(
-            new Config\BinaryOperator('^', pow(...), Config\BinaryOperator::PRIORITY_POW, Config\Association::LEFT)
+            new Config\BinaryOperator('^', pow(...), Config\BinaryOperator::PRIORITY_POW, Config\BinaryAssoc::LEFT)
         );
 
         $eval = Calculator::evaluate('2 ^ 3 ^ 4', $config);
@@ -24,7 +24,7 @@ class CustomBinaryOperatorsTest extends TestCase
     public function testRightAssociative(): void
     {
         $config = Config::default()->addOperator(
-            new Config\BinaryOperator('^', pow(...), Config\BinaryOperator::PRIORITY_POW, Config\Association::RIGHT)
+            new Config\BinaryOperator('^', pow(...), Config\BinaryOperator::PRIORITY_POW, Config\BinaryAssoc::RIGHT)
         );
 
         $eval = Calculator::evaluate('2 ^ 3 ^ 4', $config);
@@ -35,7 +35,7 @@ class CustomBinaryOperatorsTest extends TestCase
     public function testMulticharOperators(): void
     {
         $config = Config::default()->addOperator(
-            new Config\BinaryOperator('**', pow(...), Config\BinaryOperator::PRIORITY_POW, Config\Association::RIGHT)
+            new Config\BinaryOperator('**', pow(...), Config\BinaryOperator::PRIORITY_POW, Config\BinaryAssoc::RIGHT)
         );
 
         // ** should take precedence over *
