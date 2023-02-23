@@ -31,6 +31,8 @@ final class Parser
         $vars = [];
         $operations = [];
 
+        $operators = $this->config->getOperators();
+
         while ($lexer->lookahead) {
             $prevToken = $lexer->token;
 
@@ -84,7 +86,7 @@ final class Parser
                     break;
 
                 case Lexer\Token::T_UNARY_OPERATOR:
-                    $operator = $this->config->getOperators()[$lexer->token->value] ?? null;
+                    $operator = $operators[$lexer->token->value] ?? null;
 
                     if ($operator instanceof Config\UnaryOperator) {
                         if ($operator->position === UnaryPos::PREFIX) {
@@ -125,7 +127,7 @@ final class Parser
                     if ($lexer->token->value === '+' || $lexer->token->value === '-') {
                         $operator = null; // special handling
                     } else {
-                        $operator = $this->config->getOperators()[$lexer->token->value] ??
+                        $operator = $operators[$lexer->token->value] ??
                             throw Exceptions\ParseException::fromToken(
                                 'Unknown operator ' . $lexer->token->value,
                                 $lexer->token
@@ -183,7 +185,7 @@ final class Parser
                                     $operations[] = $stack->pop();
                                     continue 2; // continue while
                                 case $stackTop instanceof Operation\BinaryOperator:
-                                    $stackTopOperator = $this->config->getOperators()[$stackTop->operator] ?? null;
+                                    $stackTopOperator = $operators[$stackTop->operator] ?? null;
                                     $stackTopPriority = $stackTopOperator?->priority ??
                                         Config\BinaryOperator::PRIORITY_ADD;
                                     if (
@@ -228,21 +230,5 @@ final class Parser
             variables: $vars,
             functions: $funcs,
         );
-    }
-
-    private function getPriority(string $symbol): int
-    {
-        if ($symbol === '+' || $symbol === '-') {
-            return Config\BinaryOperator::PRIORITY_ADD;
-        }
-
-        $operator = $this->config->getOperators()[$symbol] ??
-            throw new Exceptions\ParseException('Misconfigured binary operator: ' . $symbol);
-
-        if ($operator instanceof Config\BinaryOperator) {
-            return $operator->priority;
-        }
-
-        throw new Exceptions\ParseException("Operator {$symbol} is not binary");
     }
 }
