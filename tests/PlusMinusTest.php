@@ -7,7 +7,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 use Arokettu\ArithmeticParser\Calculator;
 use PHPUnit\Framework\TestCase;
 
-class ArithmeticTest extends TestCase
+class PlusMinusTest extends TestCase
 {
     public function testOperators(): void
     {
