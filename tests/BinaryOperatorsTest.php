@@ -8,7 +8,7 @@ use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use PHPUnit\Framework\TestCase;
 
-class CustomBinaryOperatorsTest extends TestCase
+class BinaryOperatorsTest extends TestCase
 {
     public function testLeftAssociative(): void
     {
