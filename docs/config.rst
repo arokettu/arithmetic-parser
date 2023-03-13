@@ -3,7 +3,7 @@ Configuration
 
 .. highlight:: php
 
-``Arokettu\ArithmeticParser\Config`` class is used to configure the calculator and the parser (in future).
+``Arokettu\ArithmeticParser\Config`` class is used to configure the calculator and the parser.
 
 Config is an immutable object and ConfigBuilder is a user-friendly way to set up options.
 
@@ -81,7 +81,7 @@ You can:
 * Add new operators::
 
     <?php
-    // assume you have factorial defined
+    // assuming you have factorial() defined
     $config->addOperators(
         new BinaryOperator('^', pow(...), BinaryOperator::PRIORITY_POW, BinaryAssoc::RIGHT),
         new UnaryOperator('!', factorial(...), UnaryPos::POSTFIX),
