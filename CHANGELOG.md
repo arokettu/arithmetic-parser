@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.x
+
+### 1.0.0
+
+*Mar 13, 2023*
+
+* Missing operator is now detected on parsing stage, not on calculation.
+
 ## 0.x
 
 ### 0.4.0 "RC1"
