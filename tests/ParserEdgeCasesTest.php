@@ -108,12 +108,57 @@ class ParserEdgeCasesTest extends TestCase
     public function testWrongOrderPrefixUnary(): void
     {
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unary prefix operator (~) missing its argument at position 1');
+        $this->expectExceptionMessage('Missing operator at position 1');
 
         $config = Config::default()->addOperators(
             new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('5~');
+    }
+
+    public function testNoOperator(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Missing operator at position 1');
+
+        (new Parser())->parse('5x');
+    }
+
+    public function testNoOperatorBetweenNumbers(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Missing operator at position 2');
+
+        (new Parser())->parse('5 10');
+    }
+
+    public function testNoOperatorBetweenVariables(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Missing operator at position 2');
+
+        (new Parser())->parse('$x$y');
+    }
+
+    public function testNoOperatorBetweenBrackets(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Missing operator at position 6');
+
+        (new Parser())->parse('(1+2) (3+4)');
+    }
+
+    public function testNoOperatorBetweenPrefixAndPostfix(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Missing operator at position 5');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('?', fn ($a) => $a * 2, UnaryPos::POSTFIX),
+            new UnaryOperator('¿', fn ($a) => $a + 2, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('¿2? ¿3?');
     }
 }

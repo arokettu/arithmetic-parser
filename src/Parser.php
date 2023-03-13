@@ -37,6 +37,37 @@ final class Parser
 
             $lexer->moveNext();
 
+            // detect missing / implicit operator
+            if (
+                // current token is a beginning of a value
+                $lexer->token->isA(
+                    Lexer\Token::T_NUMBER,
+                    Lexer\Token::T_NAME,
+                    Lexer\Token::T_BRACKET_OPEN,
+                    Lexer\Token::T_UNARY_PREFIX_OPERATOR,
+                ) &&
+                // prev token is an end of a value
+                $prevToken !== null &&
+                $prevToken->isA(
+                    Lexer\Token::T_NUMBER,
+                    Lexer\Token::T_NAME,
+                    Lexer\Token::T_BRACKET_CLOSE,
+                    Lexer\Token::T_UNARY_POSTFIX_OPERATOR,
+                )
+            ) {
+                $isFuncCall =
+                    $prevToken->type === Lexer\Token::T_NAME &&
+                    $lexer->token->type === Lexer\Token::T_BRACKET_OPEN;
+
+                if (!$isFuncCall) {
+                    // implicit operator is not yet supported so just throw
+                    throw Exceptions\ParseException::fromToken(
+                        'Missing operator',
+                        $lexer->token,
+                    );
+                }
+            }
+
             switch ($lexer->token->type) {
                 // error
                 case Lexer\Token::T_UNRECOGNIZED:
