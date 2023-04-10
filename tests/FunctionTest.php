@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Calculator;
+use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
 use PHPUnit\Framework\TestCase;
 
@@ -25,5 +26,42 @@ class FunctionTest extends TestCase
         $this->expectExceptionMessage('Undefined function: MyFunc');
 
         Calculator::evaluate('MyFunc(1) + 3');
+    }
+
+    public function testConfigCustomFunctionByCallable(): void
+    {
+        $config = Config::default()->addFunctions(
+            mul2: fn ($a) => $a * 2,
+        );
+        self::assertEquals(4, Calculator::evaluate('mul2(2)', $config));
+    }
+
+    public function testConfigAddFunctionByObject(): void
+    {
+        $config = Config::default()->addFunctions(
+            new Config\Func('mul2', fn ($a) => $a * 2),
+        );
+        self::assertEquals(4, Calculator::evaluate('mul2(2)', $config));
+    }
+
+    public function testConfigRemoveFunction(): void
+    {
+        $config = Config::default();
+        self::assertArrayHasKey('ABS', $config->getFunctions()); // normalized
+
+        $config->removeFunctions('abs');
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Undefined function: abs');
+
+        Calculator::evaluate('abs(1 - 3)', $config);
+    }
+
+    public function testConfigClearFunctions(): void
+    {
+        $config = Config::default()->clearFunctions();
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Undefined function: abs');
+
+        Calculator::evaluate('abs(1 - 3)', $config);
     }
 }

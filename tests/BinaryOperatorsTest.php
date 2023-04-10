@@ -6,6 +6,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
+use Arokettu\ArithmeticParser\Exceptions\ParseException;
 use PHPUnit\Framework\TestCase;
 
 class BinaryOperatorsTest extends TestCase
@@ -75,5 +76,29 @@ class BinaryOperatorsTest extends TestCase
         $eval = Calculator::evaluate('2 add 2 mul 2', $config);
 
         self::assertEquals(2 + 2 * 2, $eval);
+    }
+
+    public function testConfigRemoveOperator(): void
+    {
+        $config = Config::default();
+        self::assertArrayHasKey('/', $config->getOperators());
+
+        $config->removeOperators('/');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unexpected "/" at position 2');
+
+        Calculator::evaluate('2 / 2', $config);
+    }
+
+    public function testConfigClearOperators(): void
+    {
+        $config = Config::default();
+        self::assertArrayHasKey('*', $config->getOperators());
+
+        $config->clearOperators();
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unexpected "*" at position 2');
+
+        Calculator::evaluate('2 * 2', $config);
     }
 }

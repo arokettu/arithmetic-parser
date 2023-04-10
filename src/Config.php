@@ -129,6 +129,15 @@ final class Config
     /**
      * @return $this
      */
+    public function clearFunctions(): self
+    {
+        $this->setFunctions();
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
     public function setOperators(Config\Operator ...$operators): self
     {
         $this->operators = [];
@@ -172,6 +181,15 @@ final class Config
         foreach ($operators as $operator) {
             unset($this->operators[$operator]);
         }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearOperators(): self
+    {
+        $this->setOperators();
         return $this;
     }
 }
