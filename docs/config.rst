@@ -15,6 +15,8 @@ The default preset used when no config is specified.
 Functions
 =========
 
+.. versionadded:: 1.1.0 removeFunction() and clearFunctions()
+
 The function must be a callable that accepts a single float argument.
 
 Default functions:
@@ -55,9 +57,13 @@ You can:
 
     <?php
     $config->removeFunctions('acos', 'asin');
+    $config->removeFunction('acos'); // semantic alias for removeFunctions('acos')
+    $config->clearFunctions(); // remove all functions
 
 Operators
 =========
+
+.. versionadded:: 1.1.0 removeOperator() and clearOperators()
 
 Operators can be unary and binary.
 Operator symbol can be any string without digits.
@@ -90,5 +96,9 @@ You can:
 * Remove operators::
 
     <?php
+    // remove any custom or built-in operators except for + and -
+    $config->removeOperators('*', '/');
     // you cannot divide by zero if you cannot divide
-    $config->removeOperators('/');
+    $config->removeOperator('/'); // semantic alias for removeOperators('/')
+    // leave only + and -
+    $config->clearOperators(); // + and - are handled specially and can't be removed

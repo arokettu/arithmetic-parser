@@ -2,6 +2,16 @@
 
 ## 1.x
 
+### 1.1.0
+
+*Apr 10, 2023*
+
+* Added semantic aliases for config methods:
+  * `removeFunction('abc')` -> `removeFunctions(/* single argument */ 'abs')`
+  * `removeOperator('/')` -> `removeOperators(/* single argument */ '/')`
+  * `clearFunctions()` -> `setFunctions(/* empty list */)`
+  * `clearOperators()` -> `setOperators(/* empty list */)`
+
 ### 1.0.0
 
 *Mar 13, 2023*
