@@ -129,6 +129,14 @@ final class Config
     /**
      * @return $this
      */
+    public function removeFunction(string $func): self
+    {
+        return $this->removeFunctions($func);
+    }
+
+    /**
+     * @return $this
+     */
     public function clearFunctions(): self
     {
         $this->setFunctions();
@@ -182,6 +190,14 @@ final class Config
             unset($this->operators[$operator]);
         }
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function removeOperator(string $operator): self
+    {
+        return $this->removeOperators($operator);
     }
 
     /**

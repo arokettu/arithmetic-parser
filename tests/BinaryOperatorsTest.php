@@ -83,7 +83,7 @@ class BinaryOperatorsTest extends TestCase
         $config = Config::default();
         self::assertArrayHasKey('/', $config->getOperators());
 
-        $config->removeOperators('/');
+        $config->removeOperator('/');
         $this->expectException(ParseException::class);
         $this->expectExceptionMessage('Unexpected "/" at position 2');
 

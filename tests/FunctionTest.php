@@ -49,7 +49,7 @@ class FunctionTest extends TestCase
         $config = Config::default();
         self::assertArrayHasKey('ABS', $config->getFunctions()); // normalized
 
-        $config->removeFunctions('abs');
+        $config->removeFunction('abs');
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Undefined function: abs');
 
