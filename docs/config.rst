@@ -5,7 +5,7 @@ Configuration
 
 ``Arokettu\ArithmeticParser\Config`` class is used to configure the calculator and the parser.
 
-Config is an immutable object and ConfigBuilder is a user-friendly way to set up options.
+Config is mutable but it is cloned internally when passed to prevent external alterations.
 
 ``Config::default()``
 =====================
