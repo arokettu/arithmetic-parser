@@ -13,6 +13,7 @@ Supported expressions can include:
 * Functions.
   Function names are case insensitive alphanumeric strings that do not start with a number.
   They may have an optional ``@`` prefix.
+  Functions with and without prefix are equivalent.
   Functions accept a single parameter.
   Custom functions can be created with a Config object.
 * Variables.
