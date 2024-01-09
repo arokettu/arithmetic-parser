@@ -2,6 +2,12 @@
 
 ## 1.x
 
+### 1.1.1
+
+*Jan 9, 2024*
+
+* Remove dependency on php-ds because of slow polyfill performance
+
 ### 1.1.0
 
 *Apr 10, 2023*
