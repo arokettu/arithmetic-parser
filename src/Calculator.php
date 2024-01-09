@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
-use Ds\Stack;
+use SplStack;
 
 final class Calculator
 {
@@ -67,7 +67,7 @@ final class Calculator
             $normalizedVars[$normalizedName] = $value;
         }
 
-        $stack = new Stack();
+        $stack = new SplStack();
 
         foreach ($this->operations as $operation) {
             switch (true) {
@@ -101,7 +101,7 @@ final class Calculator
         return $stack->pop();
     }
 
-    private function performFunction(Operation\FunctionCall $operation, Stack $stack): void
+    private function performFunction(Operation\FunctionCall $operation, SplStack $stack): void
     {
         $value = $stack->pop();
         $func =
@@ -110,7 +110,7 @@ final class Calculator
         $stack->push(($func->callable)($value));
     }
 
-    private function performBinaryOperator(Operation\BinaryOperator $operation, Stack $stack): void
+    private function performBinaryOperator(Operation\BinaryOperator $operation, SplStack $stack): void
     {
         $value2 = $stack->pop();
         $value1 = $stack->pop();
@@ -132,7 +132,7 @@ final class Calculator
         }
     }
 
-    private function performUnaryOperator(Operation\UnaryOperator $operation, Stack $stack): void
+    private function performUnaryOperator(Operation\UnaryOperator $operation, SplStack $stack): void
     {
         $value = $stack->pop();
 

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
-use Ds\Stack;
+use RuntimeException;
+use SplStack;
 
 final class Parser
 {
@@ -24,8 +25,8 @@ final class Parser
         $lexer->setInput($input);
         $lexer->moveNext();
 
-        /** @var Stack<Operation\Operation> $stack */
-        $stack = new Stack();
+        /** @var SplStack<Operation\Operation> $stack */
+        $stack = new SplStack();
         $funcs = [];
         $vars = [];
         $operations = [];
@@ -110,7 +111,7 @@ final class Parser
                             // bracket will be removed from the stack and not added to $operations
                             $operation = $stack->pop();
                         }
-                    } catch (\UnderflowException) {
+                    } catch (RuntimeException) {
                         throw Exceptions\ParseException::fromToken('Unmatched closing bracket', $lexer->token);
                     }
                     break;
@@ -200,7 +201,7 @@ final class Parser
                         $association = $operator?->association ?? Config\BinaryAssoc::LEFT;
 
                         while (\count($stack) > 0) {
-                            $stackTop = $stack->peek();
+                            $stackTop = $stack->top();
                             switch (true) {
                                 case $stackTop instanceof Operation\FunctionCall:
                                 case $stackTop instanceof Operation\UnaryOperator:
