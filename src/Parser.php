@@ -265,7 +265,8 @@ final class Parser
                             $lexer->lookahead->type === Lexer\Token::T_BINARY_OPERATOR && (
                                 $lexer->lookahead->value !== '+' && $lexer->lookahead->value !== '-' // unary prefix
                             ) ||
-                            $lexer->lookahead->type === Lexer\Token::T_UNARY_POSTFIX_OPERATOR
+                            $lexer->lookahead->type === Lexer\Token::T_UNARY_POSTFIX_OPERATOR ||
+                            $lexer->lookahead->type === Lexer\Token::T_PARAM_SEPARATOR
                         ) {
                             throw Exceptions\ParseException::fromToken(
                                 "Binary operator ({$lexer->token->value}) missing second argument",
