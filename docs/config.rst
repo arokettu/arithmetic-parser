@@ -17,12 +17,12 @@ Functions
 
 .. versionadded:: 1.1.0 removeFunction() and clearFunctions()
 
-The function must be a callable that accepts a single float argument.
+The function must be a callable that accepts float arguments.
 
 Default functions:
 `abs <https://www.php.net/manual/en/function.abs.php>`__,
 `exp <https://www.php.net/manual/en/function.exp.php>`__,
-`log <https://www.php.net/manual/en/function.log.php>`__,
+`log(num, base = e()) <https://www.php.net/manual/en/function.log.php>`__,
 `log10 <https://www.php.net/manual/en/function.log10.php>`__,
 `sqrt <https://www.php.net/manual/en/function.sqrt.php>`__,
 `acos <https://www.php.net/manual/en/function.acos.php>`__,
@@ -41,7 +41,14 @@ Default functions:
 `floor <https://www.php.net/manual/en/function.floor.php>`__,
 `round <https://www.php.net/manual/en/function.round.php>`__,
 `deg2rad <https://www.php.net/manual/en/function.deg2rad.php>`__,
-`rad2deg <https://www.php.net/manual/en/function.rad2deg.php>`__.
+`rad2deg <https://www.php.net/manual/en/function.rad2deg.php>`__,
+`pi <https://www.php.net/manual/en/math.constants.php#constant.m-pi>`,
+`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`,
+`if(if, then, else)`.
+
+.. note::
+    ``if()`` is a regular function and therefore is not lazy.
+    For example, ``if (a = 0, 0, 1/a)`` will result in division by zero if ``a = 0``.
 
 You can:
 

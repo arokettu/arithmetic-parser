@@ -7,7 +7,13 @@ Supported Elements
 Supported expressions can include:
 
 * Unary operators ``+`` and ``-`` with any custom operators added.
-* Binary ``+``, ``-``, ``*``, ``/`` with any custom operators added. ``*`` and ``/`` can be disabled.
+* Binary ``+``, ``-``,
+  ``*``, ``/``,
+  ``<``, ``>``, ``<=``, ``>=``,
+  ``=`` (also ``==``), ``<>`` (also ``!=``),
+  ``and`` (also ``AND```), ``or`` (also ``OR```)
+  with any custom operators added.
+  All operators except for ``+`` and ``-`` can be disabled.
 * Numbers, obviously.
   All numbers are cast to float internally.
 * Functions.

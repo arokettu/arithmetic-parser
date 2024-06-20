@@ -23,6 +23,7 @@ Documentation
    calculator
    parser
    config
+   upgrade
 
 License
 =======
