@@ -42,9 +42,9 @@ Default functions:
 `round <https://www.php.net/manual/en/function.round.php>`__,
 `deg2rad <https://www.php.net/manual/en/function.deg2rad.php>`__,
 `rad2deg <https://www.php.net/manual/en/function.rad2deg.php>`__,
-`pi <https://www.php.net/manual/en/math.constants.php#constant.m-pi>`,
-`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`,
-`if(if, then, else)`.
+`pi <https://www.php.net/manual/en/math.constants.php#constant.m-pi>`__,
+`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`__,
+if(if, then, else).
 
 .. note::
     ``if()`` is a regular function and therefore is not lazy.

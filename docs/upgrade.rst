@@ -5,4 +5,5 @@ Upgrade Notes
 ==========
 
 * Comma (``,``) can no longer be used as an operator
-* ``InvalidArgumentException`` was replaced with ``DomainException```
+* ``InvalidArgumentException`` was replaced with ``DomainException``
+* Absolute values of ``Config\BinaryOperator::PRIORITY_*`` constants changed
