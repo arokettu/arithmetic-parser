@@ -103,11 +103,17 @@ final class Calculator
 
     private function performFunction(Operation\FunctionCall $operation, SplStack $stack): void
     {
-        $value = $stack->pop();
+        if ($operation->arity < 0) {
+            throw new Exceptions\CalcCallException("Invalid function arity, likely parser failure: {$operation->name}");
+        }
+        $values = [];
+        for ($i = 0; $i < $operation->arity; $i++) {
+            $values[] = $stack->pop();
+        }
         $func =
             $this->config->getFunctions()[$operation->normalizedName] ??
             throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
-        $stack->push(($func->callable)($value));
+        $stack->push(($func->callable)(...array_reverse($values)));
     }
 
     private function performBinaryOperator(Operation\BinaryOperator $operation, SplStack $stack): void

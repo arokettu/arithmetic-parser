@@ -107,12 +107,21 @@ final class Parser
                     break;
 
                 case Lexer\Token::T_PARAM_SEPARATOR:
-                    if ($prevToken === null || $prevToken->isA(Lexer\Token::T_BRACKET_OPEN, Lexer\Token::T_PARAM_SEPARATOR)) {
-                        throw Exceptions\ParseException::fromToken('Empty expression before param separator', $lexer->token);
+                    if (
+                        $prevToken === null ||
+                        $prevToken->isA(Lexer\Token::T_BRACKET_OPEN, Lexer\Token::T_PARAM_SEPARATOR)
+                    ) {
+                        throw Exceptions\ParseException::fromToken(
+                            'Empty expression before param separator',
+                            $lexer->token
+                        );
                     }
 
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE) {
-                        throw Exceptions\ParseException::fromToken('Empty expression before closing bracket', $lexer->token);
+                        throw Exceptions\ParseException::fromToken(
+                            'Empty expression before closing bracket',
+                            $lexer->token
+                        );
                     }
 
                     $stack->push(new Operation\ParamSeparator());
@@ -145,7 +154,10 @@ final class Parser
                     // brackets that are not function calls can't contain separators
                     if ($stack->isEmpty() || !($stack->top() instanceof Operation\FunctionCall)) {
                         if ($separators !== 0) {
-                            throw Exceptions\ParseException::fromToken('Param separator outside of function call', $lexer->token);
+                            throw Exceptions\ParseException::fromToken(
+                                'Param separator outside of function call',
+                                $lexer->token
+                            );
                         }
                         break;
                     }
