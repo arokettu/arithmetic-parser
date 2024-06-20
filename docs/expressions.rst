@@ -11,7 +11,7 @@ Supported expressions can include:
   ``*``, ``/``,
   ``<``, ``>``, ``<=``, ``>=``,
   ``=`` (also ``==``), ``<>`` (also ``!=``),
-  ``and`` (also ``AND```), ``or`` (also ``OR```)
+  ``and`` (also ``AND``), ``or`` (also ``OR``)
   with any custom operators added.
   All operators except for ``+`` and ``-`` can be disabled.
 * Numbers, obviously.

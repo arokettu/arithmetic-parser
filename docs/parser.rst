@@ -35,3 +35,5 @@ Example:
         new BinaryOperator('*'),
         new BinaryOperator('+'),
     ]; // true
+
+    var_dump($rpn->asString()); // "x 3 y * +"
