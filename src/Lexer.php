@@ -35,6 +35,7 @@ final class Lexer extends AbstractLexer
             '[\-+]',
             $operators,
             '\(',
+            ',',
             '\)',
             '[$@]?[_a-zA-Z][_a-zA-Z0-9]*',
         ];
@@ -61,6 +62,8 @@ final class Lexer extends AbstractLexer
                 => Lexer\Token::T_BRACKET_CLOSE,
             $value === '+', $value === '-'
                 => Lexer\Token::T_BINARY_OPERATOR,
+            $value === ','
+                => Lexer\Token::T_PARAM_SEPARATOR,
             isset($operators[$value]) => match (true) {
                 $operators[$value] instanceof Config\BinaryOperator => Lexer\Token::T_BINARY_OPERATOR,
                 $operators[$value] instanceof Config\UnaryOperator => match ($operators[$value]->position) {

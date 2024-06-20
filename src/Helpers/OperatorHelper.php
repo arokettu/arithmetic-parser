@@ -16,6 +16,14 @@ final class OperatorHelper
             throw new \InvalidArgumentException('+ and - are reserved and cannot be configured');
         }
 
+        if ($symbol === '(' || $symbol === ')') {
+            throw new \InvalidArgumentException('Brackets ( and ) are reserved and cannot be configured');
+        }
+
+        if ($symbol === ',') {
+            throw new \InvalidArgumentException('Comma (,) is reserved and cannot be configured');
+        }
+
         if (preg_match('/[.\d\s]/', $symbol)) {
             throw new \InvalidArgumentException('Operator symbol must not contain digits, dots, and spaces');
         }

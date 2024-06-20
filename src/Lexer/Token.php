@@ -13,5 +13,6 @@ enum Token
     case T_NUMBER;
     case T_BRACKET_OPEN;
     case T_BRACKET_CLOSE;
+    case T_PARAM_SEPARATOR;
     case T_UNRECOGNIZED;
 }
