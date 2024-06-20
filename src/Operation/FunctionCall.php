@@ -12,7 +12,7 @@ final class FunctionCall implements Operation
 
     public function __construct(
         public readonly string $name,
-        public readonly int $arity = -1,
+        public readonly int $arity,
     ) {
         $this->normalizedName = NameHelper::normalizeFunc($name);
         NameHelper::assertName($this->normalizedName);

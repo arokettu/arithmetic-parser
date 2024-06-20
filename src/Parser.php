@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use LogicException;
 use RuntimeException;
 use SplStack;
 
@@ -86,7 +87,7 @@ final class Parser
                 case Lexer\Token::T_NAME:
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_OPEN) {
                         // function call
-                        $stack->push($func = new Operation\FunctionCall($lexer->token->value));
+                        $stack->push($func = new Operation\FunctionCall($lexer->token->value, -1));
                         $funcs[$func->normalizedName] = $func;
                     } else {
                         // variable name
@@ -96,24 +97,69 @@ final class Parser
                     break;
 
                 case Lexer\Token::T_BRACKET_OPEN:
-                    if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE) {
+                    if (
+                        $lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE &&
+                        $prevToken?->type !== Lexer\Token::T_NAME // function call with 0 params is acceptable
+                    ) {
                         throw Exceptions\ParseException::fromToken('Empty brackets', $lexer->token);
                     }
                     $stack->push(new Operation\Bracket());
                     break;
 
+                case Lexer\Token::T_PARAM_SEPARATOR:
+                    if ($prevToken === null || $prevToken->isA(Lexer\Token::T_BRACKET_OPEN, Lexer\Token::T_PARAM_SEPARATOR)) {
+                        throw Exceptions\ParseException::fromToken('Empty expression before param separator', $lexer->token);
+                    }
+
+                    if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE) {
+                        throw Exceptions\ParseException::fromToken('Empty expression before closing bracket', $lexer->token);
+                    }
+
+                    $stack->push(new Operation\ParamSeparator());
+                    break;
+
                 case Lexer\Token::T_BRACKET_CLOSE:
+                    if ($prevToken?->type === Lexer\Token::T_BRACKET_OPEN) {
+                        $arity = 0;
+                        $stack->pop(); // ignore the bracket
+                        goto handleFunc; // this can only happen during function call
+                    }
+
                     try {
                         $operation = $stack->pop();
+                        $separators = 0;
 
                         while (!($operation instanceof Operation\Bracket)) {
-                            $operations[] = $operation;
+                            if ($operation instanceof Operation\ParamSeparator) {
+                                $separators += 1;
+                            } else {
+                                $operations[] = $operation;
+                            }
                             // bracket will be removed from the stack and not added to $operations
                             $operation = $stack->pop();
                         }
                     } catch (RuntimeException) {
                         throw Exceptions\ParseException::fromToken('Unmatched closing bracket', $lexer->token);
                     }
+
+                    // brackets that are not function calls can't contain separators
+                    if ($stack->isEmpty() || !($stack->top() instanceof Operation\FunctionCall)) {
+                        if ($separators !== 0) {
+                            throw Exceptions\ParseException::fromToken('Param separator outside of function call', $lexer->token);
+                        }
+                        break;
+                    }
+
+                    // handle function
+                    $arity = $separators + 1;
+
+                    handleFunc:
+                    $operation = $stack->pop();
+                    if (!($operation instanceof Operation\FunctionCall)) {
+                        throw new LogicException('Parser entered an invalid state', $arity);
+                    }
+
+                    $operations[] = new Operation\FunctionCall($operation->name, $arity); // write correct arity
                     break;
 
                 case Lexer\Token::T_UNARY_PREFIX_OPERATOR:
@@ -204,6 +250,7 @@ final class Parser
                             $stackTop = $stack->top();
                             switch (true) {
                                 case $stackTop instanceof Operation\FunctionCall:
+                                    throw new LogicException('Parser entered an invalid state');
                                 case $stackTop instanceof Operation\UnaryOperator:
                                     $operations[] = $stack->pop();
                                     continue 2; // continue while
@@ -240,8 +287,7 @@ final class Parser
         foreach ($stack as $op) {
             if (
                 !($op instanceof Operation\BinaryOperator) &&
-                !($op instanceof Operation\UnaryOperator) &&
-                !($op instanceof Operation\FunctionCall)
+                !($op instanceof Operation\UnaryOperator)
             ) {
                 throw new Exceptions\ParseException('Probably invalid operator combination');
             }
