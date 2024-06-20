@@ -7,6 +7,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use DomainException;
 use PHPUnit\Framework\TestCase;
 
 class FunctionTest extends TestCase
@@ -63,5 +64,17 @@ class FunctionTest extends TestCase
         $this->expectExceptionMessage('Undefined function: abs');
 
         Calculator::evaluate('abs(1 - 3)', $config);
+    }
+
+    public function testConfigInvalidFuncName(): void
+    {
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Invalid variable or function name: 1ABC');
+
+        $config = Config::default();
+        $func = [
+            '1abc' => fn () => null,
+        ];
+        $config->addFunctions(...$func);
     }
 }

@@ -8,13 +8,13 @@ use Arokettu\ArithmeticParser\Helpers\NameHelper;
 
 final class Variable implements Operation
 {
-    public readonly string $name;
     public readonly string $normalizedName;
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
+    public function __construct(
+        public readonly string $name,
+    ) {
         $this->normalizedName = NameHelper::normalizeVar($name);
+        NameHelper::assertName($this->normalizedName);
     }
 
     public function asString(): string

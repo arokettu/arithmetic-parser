@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser\Helpers;
 
+use DomainException;
+
 final class NameHelper
 {
     public static function normalizeVar(string $name): string
@@ -25,7 +27,7 @@ final class NameHelper
     public static function assertName(string $normalizedName): void
     {
         if (!preg_match('/^[_A-Z][_A-Z0-9]*$/', $normalizedName)) {
-            throw new \InvalidArgumentException('Invalid function name: ' . $normalizedName);
+            throw new DomainException('Invalid variable or function name: ' . $normalizedName);
         }
     }
 }

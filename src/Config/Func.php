@@ -8,14 +8,15 @@ use Arokettu\ArithmeticParser\Helpers\NameHelper;
 
 final class Func
 {
-    public readonly string $name;
     public readonly string $normalizedName;
     public readonly \Closure $callable;
 
-    public function __construct(string $name, callable $callable)
-    {
-        $this->name = $name;
+    public function __construct(
+        public readonly string $name,
+        callable $callable,
+    ) {
         $this->normalizedName = NameHelper::normalizeFunc($name);
+        NameHelper::assertName($this->normalizedName);
         $this->callable = $callable(...);
     }
 }
