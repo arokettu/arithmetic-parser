@@ -8,9 +8,12 @@ use Arokettu\ArithmeticParser\Helpers\OperatorHelper;
 
 final class BinaryOperator implements Operator
 {
-    public const PRIORITY_ADD = 100;
-    public const PRIORITY_MUL = 200;
-    public const PRIORITY_POW = 300;
+    public const PRIORITY_OR = 1000;
+    public const PRIORITY_AND = 2000;
+    public const PRIORITY_COMPARE = 3000;
+    public const PRIORITY_ADD = 4000;
+    public const PRIORITY_MUL = 5000;
+    public const PRIORITY_POW = 6000;
 
     public function __construct(
         public readonly string $symbol,

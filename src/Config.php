@@ -21,7 +21,7 @@ final class Config
                 // generic
                 abs: abs(...),
                 exp: exp(...),
-                log: fn (float $num) => log($num),
+                log: log(...),
                 log10: log10(...),
                 sqrt: sqrt(...),
                 // trigonometric functions
@@ -45,7 +45,14 @@ final class Config
                 // conversion
                 deg2rad: deg2rad(...),
                 rad2deg: rad2deg(...),
+                // constants
+                pi: fn () => M_PI,
+                e: fn () => M_E,
+                // compare
+                if: fn (float $check, float $then, float $else) => $check ? $then : $else,
             )->addOperators(
+                // arithmetic
+
                 new Config\BinaryOperator(
                     '*',
                     fn (float $a, float $b): float => $a * $b,
@@ -56,6 +63,80 @@ final class Config
                     '/',
                     fn (float $a, float $b): float => $a / $b,
                     Config\BinaryOperator::PRIORITY_MUL,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                // comparison
+                new Config\BinaryOperator(
+                    '<',
+                    fn (float $a, float $b): float => \intval($a < $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '>',
+                    fn (float $a, float $b): float => \intval($a > $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '<=',
+                    fn (float $a, float $b): float => \intval($a <= $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '>=',
+                    fn (float $a, float $b): float => \intval($a >= $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '=',
+                    fn (float $a, float $b): float => \intval($a == $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '==',
+                    fn (float $a, float $b): float => \intval($a == $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '!=',
+                    fn (float $a, float $b): float => \intval($a != $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    '<>',
+                    fn (float $a, float $b): float => \intval($a != $b),
+                    Config\BinaryOperator::PRIORITY_COMPARE,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                // logic
+                new Config\BinaryOperator(
+                    'and',
+                    fn (float $a, float $b): float => \intval($a && $b),
+                    Config\BinaryOperator::PRIORITY_AND,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    'AND',
+                    fn (float $a, float $b): float => \intval($a && $b),
+                    Config\BinaryOperator::PRIORITY_AND,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    'or',
+                    fn (float $a, float $b): float => \intval($a || $b),
+                    Config\BinaryOperator::PRIORITY_OR,
+                    Config\BinaryAssoc::LEFT,
+                ),
+                new Config\BinaryOperator(
+                    'OR',
+                    fn (float $a, float $b): float => \intval($a || $b),
+                    Config\BinaryOperator::PRIORITY_OR,
                     Config\BinaryAssoc::LEFT,
                 ),
             );
