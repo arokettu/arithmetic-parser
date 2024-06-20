@@ -16,6 +16,7 @@ Branched from 1.1.1
   * `if()`
   * `log()` now accepts base parameter
 * The library will catch more invalid situations than before
+* ``Parser\Parsed::asString()`` - RPN notation for the parsed expression
 
 ## 1.x
 
