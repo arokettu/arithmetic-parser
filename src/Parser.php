@@ -124,6 +124,16 @@ final class Parser
                         );
                     }
 
+                    // push everything to the next separator or bracket
+                    $operation = $stack->top();
+                    while (
+                        !($operation instanceof Operation\Bracket) &&
+                        !($operation instanceof Operation\ParamSeparator)
+                    ) {
+                        $operations[] = $stack->pop();
+                        $operation = $stack->top();
+                    }
+
                     $stack->push(new Operation\ParamSeparator());
                     break;
 
