@@ -191,7 +191,8 @@ final class Parser
                         $lexer->lookahead->type === Lexer\Token::T_BINARY_OPERATOR && (
                             $lexer->lookahead->value !== '+' && $lexer->lookahead->value !== '-' // unary prefix
                         ) ||
-                        $lexer->lookahead->type === Lexer\Token::T_UNARY_POSTFIX_OPERATOR
+                        $lexer->lookahead->type === Lexer\Token::T_UNARY_POSTFIX_OPERATOR ||
+                        $lexer->lookahead->type === Lexer\Token::T_PARAM_SEPARATOR
                     ) {
                         throw Exceptions\ParseException::fromToken(
                             "Unary prefix operator ({$lexer->token->value}) missing its argument",
@@ -207,7 +208,8 @@ final class Parser
                         $prevToken === null ||
                         $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
                         $prevToken->type === Lexer\Token::T_BINARY_OPERATOR ||
-                        $prevToken->type === Lexer\Token::T_UNARY_PREFIX_OPERATOR
+                        $prevToken->type === Lexer\Token::T_UNARY_PREFIX_OPERATOR ||
+                        $prevToken->type === Lexer\Token::T_PARAM_SEPARATOR
                     ) {
                         throw Exceptions\ParseException::fromToken(
                             "Unary postfix operator ({$lexer->token->value}) missing its argument",
@@ -236,7 +238,8 @@ final class Parser
                             $prevToken === null ||
                             $prevToken->type === Lexer\Token::T_BRACKET_OPEN ||
                             $prevToken->type === Lexer\Token::T_BINARY_OPERATOR ||
-                            $prevToken->type === Lexer\Token::T_UNARY_PREFIX_OPERATOR
+                            $prevToken->type === Lexer\Token::T_UNARY_PREFIX_OPERATOR ||
+                            $prevToken->type === Lexer\Token::T_PARAM_SEPARATOR
                         ) {
                             if ($lexer->token->value === '+' || $lexer->token->value === '-') {
                                 $stack->push(new Operation\UnaryOperator($lexer->token->value));
