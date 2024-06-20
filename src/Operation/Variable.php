@@ -16,4 +16,9 @@ final class Variable implements Operation
         $this->name = $name;
         $this->normalizedName = NameHelper::normalizeVar($name);
     }
+
+    public function asString(): string
+    {
+        return $this->name;
+    }
 }

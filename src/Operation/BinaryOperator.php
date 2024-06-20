@@ -9,4 +9,9 @@ final class BinaryOperator implements Operation
     public function __construct(
         public readonly string $operator,
     ) {}
+
+    public function asString(): string
+    {
+        return $this->operator;
+    }
 }

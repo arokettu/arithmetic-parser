@@ -6,4 +6,5 @@ namespace Arokettu\ArithmeticParser\Operation;
 
 interface Operation
 {
+    public function asString(): string;
 }

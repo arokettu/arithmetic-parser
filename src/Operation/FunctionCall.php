@@ -17,4 +17,9 @@ final class FunctionCall implements Operation
         $this->normalizedName = NameHelper::normalizeFunc($name);
         NameHelper::assertName($this->normalizedName);
     }
+
+    public function asString(): string
+    {
+        return "{$this->name}({$this->arity})";
+    }
 }
