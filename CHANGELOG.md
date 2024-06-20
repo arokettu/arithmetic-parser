@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.x
+
+### 2.0.0
+
+*Jun 20, 2024*
+
+Branched from 1.1.1
+
+* Functions can accept any number of arguments
+  * ``,`` is now reserved as an operator name
+* New default functions:
+  * `pi()`
+  * `e()`
+  * `if()`
+  * `log()` now accepts base parameter
+* The library will catch more invalid situations than before
+
 ## 1.x
 
 ### 1.1.1
