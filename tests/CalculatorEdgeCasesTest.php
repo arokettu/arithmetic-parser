@@ -75,4 +75,37 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Undefined unary operator: x');
         (new Calculator($operations))->calc();
     }
+
+    public function testNotEnoughArgsForUnary(): void
+    {
+        $operations = [
+            new UnaryOperator('x'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Not enough arguments for unary operator: x');
+        (new Calculator($operations))->calc();
+    }
+
+    public function testNotEnoughArgsForBinary(): void
+    {
+        $operations = [
+            new BinaryOperator('x'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Not enough arguments for binary operator: x');
+        (new Calculator($operations))->calc();
+    }
+
+    public function testNotEnoughArgsForFunc(): void
+    {
+        $operations = [
+            new FunctionCall('x', 1),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Not enough arguments for function call: x');
+        (new Calculator($operations))->calc();
+    }
 }

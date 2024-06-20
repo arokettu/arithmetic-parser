@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use RuntimeException;
 use SplStack;
 
 final class Calculator
@@ -106,10 +107,16 @@ final class Calculator
         if ($operation->arity < 0) {
             throw new Exceptions\CalcCallException("Invalid function arity, likely parser failure: {$operation->name}");
         }
-        $values = [];
-        for ($i = 0; $i < $operation->arity; $i++) {
-            $values[] = $stack->pop();
+
+        try {
+            $values = [];
+            for ($i = 0; $i < $operation->arity; $i++) {
+                $values[] = $stack->pop();
+            }
+        } catch (RuntimeException) {
+            throw new Exceptions\CalcCallException("Not enough arguments for function call: {$operation->name}");
         }
+
         $func =
             $this->config->getFunctions()[$operation->normalizedName] ??
             throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
@@ -118,8 +125,12 @@ final class Calculator
 
     private function performBinaryOperator(Operation\BinaryOperator $operation, SplStack $stack): void
     {
-        $value2 = $stack->pop();
-        $value1 = $stack->pop();
+        try {
+            $value2 = $stack->pop();
+            $value1 = $stack->pop();
+        } catch (RuntimeException) {
+            throw new Exceptions\CalcCallException("Not enough arguments for binary operator: {$operation->operator}");
+        }
 
         switch ($operation->operator) {
             case '+':
@@ -140,7 +151,11 @@ final class Calculator
 
     private function performUnaryOperator(Operation\UnaryOperator $operation, SplStack $stack): void
     {
-        $value = $stack->pop();
+        try {
+            $value = $stack->pop();
+        } catch (RuntimeException) {
+            throw new Exceptions\CalcCallException("Not enough arguments for unary operator: {$operation->operator}");
+        }
 
         switch ($operation->operator) {
             case '+':
