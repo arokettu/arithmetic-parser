@@ -21,14 +21,6 @@ class ParserEdgeCasesTest extends TestCase
         (new Parser())->parse('1 + ()');
     }
 
-//    public function testEmptyFuncBrackets(): void
-//    {
-//        $this->expectException(ParseException::class);
-//        $this->expectExceptionMessage('Empty brackets at position 7');
-//
-//        (new Parser())->parse('1 + abs()');
-//    }
-
     public function testExtraOpenBracket(): void
     {
         $this->expectException(ParseException::class);

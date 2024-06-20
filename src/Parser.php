@@ -124,6 +124,12 @@ final class Parser
                         );
                     }
 
+                    if ($stack->isEmpty()) {
+                        throw Exceptions\ParseException::fromToken(
+                            'Param separator not inside brackets',
+                            $lexer->token
+                        );
+                    }
                     // push everything to the next separator or bracket
                     $operation = $stack->top();
                     while (
