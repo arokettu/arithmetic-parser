@@ -15,7 +15,10 @@ The default preset used when no config is specified.
 Functions
 =========
 
-.. versionadded:: 1.1.0 removeFunction() and clearFunctions()
+.. versionadded:: 1.1 removeFunction() and clearFunctions()
+.. versionchanged:: 2.0 Functions can accept any number of arguments
+.. versionadded:: 2.0 ``pi()``, ``e()``, ``if()``
+.. versionchanged:: 2.0 ``log()`` now also has ``base`` optional param
 
 The function must be a callable that accepts float arguments.
 
@@ -70,7 +73,8 @@ You can:
 Operators
 =========
 
-.. versionadded:: 1.1.0 removeOperator() and clearOperators()
+.. versionadded:: 1.1 removeOperator() and clearOperators()
+.. versionadded:: 2.0 ``<``, ``>``, ``<=``, ``>=``, ``=``, ``==``, ``<>``, ``!=``, ``and``, ``AND``, ``or``, ``OR``
 
 Operators can be unary and binary.
 Operator symbol can be any string without digits.
@@ -79,7 +83,10 @@ Be wary when using latin character based operators, they are case-sensitive and 
 Default operators:
 
 * ``+``, ``-`` in both unary and binary form. They are built-in and are not configurable.
-* ``*``, ``/``.
+* ``*``, ``/``,
+  ``<``, ``>``, ``<=``, ``>=``,
+  ``=`` (also ``==``), ``<>`` (also ``!=``),
+  ``and`` (also ``AND``), ``or`` (also ``OR``).
 
 You can:
 
