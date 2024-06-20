@@ -141,7 +141,7 @@ final class Parser
                     }
 
                     $stack->push(new Operation\ParamSeparator());
-                    break;
+                    break; // param separator
 
                 case Lexer\Token::T_BRACKET_CLOSE:
                     if ($prevToken?->type === Lexer\Token::T_BRACKET_OPEN) {
@@ -184,11 +184,11 @@ final class Parser
                     handleFunc:
                     $operation = $stack->pop();
                     if (!($operation instanceof Operation\FunctionCall)) {
-                        throw new LogicException('Parser entered an invalid state', $arity);
+                        throw new LogicException('Parser entered an invalid state'); // @codeCoverageIgnore
                     }
 
                     $operations[] = new Operation\FunctionCall($operation->name, $arity); // write correct arity
-                    break;
+                    break; // bracket close
 
                 case Lexer\Token::T_UNARY_PREFIX_OPERATOR:
                     if (
@@ -282,7 +282,7 @@ final class Parser
                             $stackTop = $stack->top();
                             switch (true) {
                                 case $stackTop instanceof Operation\FunctionCall:
-                                    throw new LogicException('Parser entered an invalid state');
+                                    throw new LogicException('Parser entered an invalid state'); // @codeCoverageIgnore
                                 case $stackTop instanceof Operation\UnaryOperator:
                                     $operations[] = $stack->pop();
                                     continue 2; // continue while
@@ -308,10 +308,12 @@ final class Parser
                         break;
                     } // binary operator
 
-                    throw Exceptions\ParseException::fromToken('Unknown binary operator', $lexer->token);
+                    throw new LogicException('Unknown binary operator: ' . $operator::class); // @codeCoverageIgnore
 
                 default:
-                    throw Exceptions\ParseException::fromToken('Unexpected token', $lexer->token);
+                    // @codeCoverageIgnoreStart
+                    throw new LogicException('Unexpected token: ' . $lexer->token->type->name);
+                    // @codeCoverageIgnoreEnd
             }
         }
 
