@@ -15,6 +15,10 @@ Branched from 1.1.1
   * `e()`
   * `if()`
   * `log()` now accepts base parameter
+* New default operators:
+  * `<`, `>`, `<=`, `>=`
+  * `=` (`==`), `<>` (`!=`)
+  * `and` (`AND`), `or` (`OR`)
 * The library will catch more invalid situations than before
 * ``Parser\Parsed::asString()`` - RPN notation for the parsed expression
 
