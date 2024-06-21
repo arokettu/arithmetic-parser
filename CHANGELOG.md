@@ -2,6 +2,12 @@
 
 ## 2.x
 
+### 2.0.1
+
+*Jun 21, 2024*
+
+* Fixed `"1 * (+)"` being parsed successfully
+
 ### 2.0.0
 
 *Jun 20, 2024*
