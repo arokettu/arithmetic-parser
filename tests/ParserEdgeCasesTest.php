@@ -109,6 +109,78 @@ class ParserEdgeCasesTest extends TestCase
         (new Parser($config))->parse('5~');
     }
 
+    public function testWrongOrderPrefixUnaryInBrackets(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Missing operator at position 6');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('(1 * 5~)');
+    }
+
+    public function testWrongOrderUnaryPlus(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Binary operator (+) missing second argument at position 1');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('5+');
+    }
+
+    public function testWrongOrderUnaryPlusInBrackets(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Binary operator (+) missing second argument at position 6');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('(1 * 5+)');
+    }
+
+    public function testWrongOrderOnlyUnaryPlusInBrackets(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unary prefix operator (+) missing its argument at position 5');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('5 / (+)')->asString();
+    }
+
+    public function testWrongOrderUnaryPlusInFuncCall(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Binary operator (+) missing second argument at position 5');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('abc(5+, 1)');
+    }
+
+    public function testWrongOrderOnlyUnaryPlusInFuncCall(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unary prefix operator (+) missing its argument at position 4');
+
+        $config = Config::default()->addOperators(
+            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+        );
+
+        (new Parser($config))->parse('abc(+, 5)')->asString();
+    }
+
     public function testNoOperator(): void
     {
         $this->expectException(ParseException::class);

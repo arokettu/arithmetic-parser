@@ -22,6 +22,8 @@ final class Parser
      */
     public function parse(string $input): Parser\Parsed
     {
+        // note: there are a couple of GOTOs that may make it hard to track
+
         $lexer = new Lexer($this->config);
         $lexer->setInput($input);
         $lexer->moveNext();
@@ -191,6 +193,7 @@ final class Parser
                     break; // bracket close
 
                 case Lexer\Token::T_UNARY_PREFIX_OPERATOR:
+                    unaryPrefix: // jump from unary +/- detection (T_BINARY_OPERATOR)
                     if (
                         $lexer->lookahead === null ||
                         $lexer->lookahead->type === Lexer\Token::T_BRACKET_CLOSE ||
@@ -248,8 +251,7 @@ final class Parser
                             $prevToken->type === Lexer\Token::T_PARAM_SEPARATOR
                         ) {
                             if ($lexer->token->value === '+' || $lexer->token->value === '-') {
-                                $stack->push(new Operation\UnaryOperator($lexer->token->value));
-                                break;
+                                goto unaryPrefix;
                             }
 
                             throw Exceptions\ParseException::fromToken(
