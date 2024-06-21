@@ -275,6 +275,7 @@ final class Parser
                         }
 
                         // regular operators
+                        // missing operator is + or -
                         $priority = $operator?->priority ?? Config\BinaryOperator::PRIORITY_ADD;
                         $association = $operator?->association ?? Config\BinaryAssoc::LEFT;
 
@@ -289,7 +290,7 @@ final class Parser
                                 case $stackTop instanceof Operation\BinaryOperator:
                                     $stackTopOperator = $operators[$stackTop->operator] ?? null;
                                     $stackTopPriority = $stackTopOperator?->priority ??
-                                        Config\BinaryOperator::PRIORITY_ADD;
+                                        Config\BinaryOperator::PRIORITY_ADD; // missing operator is + or -
                                     if (
                                         $stackTopPriority > $priority ||
                                         ($stackTopPriority === $priority && $association === Config\BinaryAssoc::LEFT)
