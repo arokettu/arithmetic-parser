@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Config;
+use Arokettu\ArithmeticParser\Exceptions\MissingFunctionArgumentsException;
 use Arokettu\ArithmeticParser\Exceptions\MissingFunctionsException;
 use Arokettu\ArithmeticParser\Exceptions\MissingVariablesException;
 use Arokettu\ArithmeticParser\Parser;
@@ -58,6 +59,21 @@ class ValidatorTest extends TestCase
 
         $this->expectException(MissingFunctionsException::class);
         $this->expectExceptionMessage('Missing functions: b(0), @D(3)');
+
+        Validator::assertValid($parsed, $config, []);
+    }
+
+    public function testInsufficientArguments(): void
+    {
+        $parsed = (new Parser())->parse('a(1,2) + b(1,2)');
+        $config = Config::default();
+        $config->addFunctions(
+            a: fn ($a, $b) => $a + $b,
+            b: fn ($a, $b, $c) => $a + $b + $c,
+        );
+
+        $this->expectException(MissingFunctionArgumentsException::class);
+        $this->expectExceptionMessage('Insufficient arguments for function b(): 3 expected but only 2 provided');
 
         Validator::assertValid($parsed, $config, []);
     }
