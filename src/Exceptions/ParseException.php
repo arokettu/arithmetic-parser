@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Arokettu\ArithmeticParser\Exceptions;
 
 use Doctrine\Common\Lexer\Token;
+use DomainException;
 
-final class ParseException extends \DomainException implements BaseException
+final class ParseException extends DomainException implements BaseException
 {
     public function __construct(
         string $message = "",
