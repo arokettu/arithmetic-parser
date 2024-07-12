@@ -30,7 +30,9 @@ final class Parser
 
         /** @var SplStack<Operation\Operation> $stack */
         $stack = new SplStack();
+        /** @var array<string, Operation\FunctionCall> $funcs */
         $funcs = [];
+        /** @var array<string, Operation\Variable> $vars */
         $vars = [];
         $operations = [];
 
@@ -90,7 +92,7 @@ final class Parser
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_OPEN) {
                         // function call
                         $stack->push($func = new Operation\FunctionCall($lexer->token->value, -1));
-                        $funcs[$func->normalizedName] = $func;
+                        // $funcs will be stored only when actual arity is determined
                     } else {
                         // variable name
                         $operations[] = ($var = new Operation\Variable($lexer->token->value));
@@ -189,7 +191,11 @@ final class Parser
                         throw new LogicException('Parser entered an invalid state'); // @codeCoverageIgnore
                     }
 
-                    $operations[] = new Operation\FunctionCall($operation->name, $arity); // write correct arity
+                    $operations[] = $func = new Operation\FunctionCall($operation->name, $arity); // write correct arity
+                    // update $funcs, store minimal actually called arity
+                    if (!isset($funcs[$func->normalizedName]) || $funcs[$func->normalizedName]->arity > $func->arity) {
+                        $funcs[$func->normalizedName] = $func;
+                    }
                     break; // bracket close
 
                 case Lexer\Token::T_UNARY_PREFIX_OPERATOR:

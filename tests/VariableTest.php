@@ -7,6 +7,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
 
 class VariableTest extends TestCase
@@ -43,5 +44,13 @@ class VariableTest extends TestCase
         $this->expectExceptionMessage('Variable MyVar1 is not defined');
 
         Calculator::evaluate('MyVar1 + 3');
+    }
+
+    public function testFindAllVariables(): void
+    {
+        $parsed = (new Parser(Config::default()))->parse('a + b(c) * d - $e / F');
+
+        // b is not a variable
+        self::assertEquals(['A', 'C', 'D', 'E', 'F'], array_keys($parsed->variables));
     }
 }

@@ -7,6 +7,8 @@ namespace Arokettu\ArithmeticParser\Tests;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\Operation\FunctionCall;
+use Arokettu\ArithmeticParser\Parser;
 use DomainException;
 use PHPUnit\Framework\TestCase;
 
@@ -76,5 +78,30 @@ class FunctionTest extends TestCase
             '1abc' => fn () => null,
         ];
         $config->addFunctions(...$func);
+    }
+
+    public function testFindAllFunctions(): void
+    {
+        $parsed = (new Parser(Config::default()))->parse('a(B(), @c(d)) + e / f(x) - f');
+
+        // d and e are not functions
+        $funcs = array_keys($parsed->functions);
+        sort($funcs);
+        self::assertEquals(['A', 'B', 'C', 'F'], $funcs);
+    }
+
+    public function testCorrectArity(): void
+    {
+        $parsed = (new Parser(Config::default()))->parse(
+            'a(1,2,3) + @a(1,2) + A(1,2,3,4) + b() / b(1) + c + c(123)'
+        );
+
+        $funcs = [
+            'A' => new FunctionCall('@a', 2), // name will be taken from the lowest arity call
+            'B' => new FunctionCall('b', 0),
+            'C' => new FunctionCall('c', 1),
+        ];
+
+        self::assertEquals($funcs, $parsed->functions);
     }
 }
