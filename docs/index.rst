@@ -20,9 +20,10 @@ Documentation
    :maxdepth: 2
 
    expressions
+   config
    calculator
    parser
-   config
+   validator
    upgrade
 
 License
