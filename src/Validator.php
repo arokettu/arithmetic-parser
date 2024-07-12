@@ -23,6 +23,11 @@ final class Validator
         if ($missingVariables !== []) {
             yield new Validator\MissingVariablesWarning($missingVariables);
         }
+
+        $missingFunctions = array_diff_key($parsed->functions, $config->getFunctions());
+        if ($missingFunctions !== []) {
+            yield new Validator\MissingFunctionsWarning($missingFunctions);
+        }
     }
 
     /**
@@ -37,8 +42,12 @@ final class Validator
     /**
      * @param list<string> $variables
      */
-    public static function isValid(Parser\Parsed $parsed, Config $config, array $variables, AbstractWarning|null &$warning = null): bool
-    {
+    public static function isValid(
+        Parser\Parsed $parsed,
+        Config $config,
+        array $variables,
+        AbstractWarning|null &$warning = null,
+    ): bool {
         foreach (self::doValidate($parsed, $config, $variables) as $w) {
             $warning = $w;
             return false;
