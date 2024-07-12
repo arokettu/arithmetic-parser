@@ -9,7 +9,7 @@ use Arokettu\ArithmeticParser\Exceptions\MissingFunctionArgumentsException;
 use Arokettu\ArithmeticParser\Exceptions\ValidationException;
 use Arokettu\ArithmeticParser\Operation\FunctionCall;
 
-final class MissingFunctionArgumentsWarning extends AbstractWarning
+final class MissingFunctionArgumentsWarning implements Warning
 {
     public function __construct(
         public readonly Func $declaration,

@@ -11,7 +11,7 @@ final class Validator
 {
     /**
      * @param list<string> $variables
-     * @return iterable<Validator\AbstractWarning>
+     * @return iterable<Validator\Warning>
      */
     private static function doValidate(Parser\Parsed $parsed, Config $config, array $variables): iterable
     {
@@ -41,7 +41,7 @@ final class Validator
 
     /**
      * @param list<string> $variables
-     * @return list<Validator\AbstractWarning>
+     * @return list<Validator\Warning>
      */
     public static function validate(Parser\Parsed $parsed, Config $config, array $variables): array
     {
@@ -50,7 +50,7 @@ final class Validator
 
     /**
      * @param list<string> $variables
-     * @param list<Validator\AbstractWarning> $warnings
+     * @param list<Validator\Warning> $warnings
      */
     public static function isValid(
         Parser\Parsed $parsed,

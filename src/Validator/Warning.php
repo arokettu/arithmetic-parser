@@ -6,8 +6,8 @@ namespace Arokettu\ArithmeticParser\Validator;
 
 use Arokettu\ArithmeticParser\Exceptions\ValidationException;
 
-abstract class AbstractWarning
+interface Warning
 {
-    abstract public function getMessage(): string;
-    abstract public function toException(): ValidationException;
+    public function getMessage(): string;
+    public function toException(): ValidationException;
 }

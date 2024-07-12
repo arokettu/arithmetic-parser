@@ -8,7 +8,7 @@ use Arokettu\ArithmeticParser\Exceptions\MissingFunctionsException;
 use Arokettu\ArithmeticParser\Exceptions\ValidationException;
 use Arokettu\ArithmeticParser\Operation\FunctionCall;
 
-final class MissingFunctionsWarning extends AbstractWarning
+final class MissingFunctionsWarning implements Warning
 {
     /**
      * @param array<string, FunctionCall> $missingFunctions

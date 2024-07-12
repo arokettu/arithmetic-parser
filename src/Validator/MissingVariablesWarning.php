@@ -8,7 +8,7 @@ use Arokettu\ArithmeticParser\Exceptions\MissingVariablesException;
 use Arokettu\ArithmeticParser\Exceptions\ValidationException;
 use Arokettu\ArithmeticParser\Operation\Variable;
 
-final class MissingVariablesWarning extends AbstractWarning
+final class MissingVariablesWarning implements Warning
 {
     /**
      * @param array<string, Variable> $missingVariables
