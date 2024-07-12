@@ -58,7 +58,7 @@ final class Validator
         array $variables,
         array|null &$warnings = null,
     ): bool {
-        if (func_num_args() > 3) {
+        if (\func_num_args() > 3) {
             // $warnings passed - collect all warnings
             $warnings = self::validate($parsed, $config, $variables);
             return $warnings === [];
