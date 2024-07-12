@@ -12,7 +12,7 @@ final class Parser
 {
     private Config $config;
 
-    public function __construct(?Config $config = null)
+    public function __construct(Config|null $config = null)
     {
         $this->config = $config ? clone $config : Config::default();
     }

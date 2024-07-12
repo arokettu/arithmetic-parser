@@ -14,7 +14,7 @@ final class Lexer extends AbstractLexer
     private Config $config;
     private readonly array $operators;
 
-    public function __construct(?Config $config = null)
+    public function __construct(Config|null $config = null)
     {
         $this->config = $config ? clone $config : Config::default();
 

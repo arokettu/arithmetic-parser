@@ -38,9 +38,9 @@
         "doctrine/lexer": "^2 | ^3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5.5",
+        "phpunit/phpunit": "^10.5",
         "psy/psysh": "*",
-        "sandfox.dev/code-standard": "^1.2024.03.15",
+        "sandfox.dev/code-standard": "^1.2024.07.05",
         "squizlabs/php_codesniffer": "*",
         "vimeo/psalm": "^5.25"
     }

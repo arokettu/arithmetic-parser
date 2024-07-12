@@ -8,7 +8,8 @@ final class UnaryOperator implements Operation
 {
     public function __construct(
         public readonly string $operator,
-    ) {}
+    ) {
+    }
 
     public function asString(): string
     {

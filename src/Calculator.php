@@ -21,7 +21,7 @@ final class Calculator
      */
     public function __construct(
         iterable $operations = [],
-        ?Config $config = null,
+        Config|null $config = null,
     ) {
         $this->setOperations(...$operations);
         $this->config = $config ? clone $config : Config::default();
@@ -36,7 +36,7 @@ final class Calculator
     /**
      * @throws Exceptions\ParseException
      */
-    public static function parse(string $input, ?Config $config = null): self
+    public static function parse(string $input, Config|null $config = null): self
     {
         return new self((new Parser($config))->parse($input)->operations, $config);
     }
@@ -45,7 +45,7 @@ final class Calculator
      * @throws Exceptions\ParseException
      * @throws Exceptions\CalcCallException
      */
-    public static function evaluate(string $expression, ?Config $config = null, float ...$vars): float
+    public static function evaluate(string $expression, Config|null $config = null, float ...$vars): float
     {
         return self::parse($expression, $config)->calc(...$vars);
     }

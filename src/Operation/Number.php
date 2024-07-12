@@ -8,7 +8,8 @@ final class Number implements Operation
 {
     public function __construct(
         public readonly float $value,
-    ) {}
+    ) {
+    }
 
     public function asString(): string
     {

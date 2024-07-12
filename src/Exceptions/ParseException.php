@@ -11,7 +11,7 @@ final class ParseException extends \DomainException implements BaseException
     public function __construct(
         string $message = "",
         int $code = 0,
-        ?\Throwable $previous = null,
+        \Throwable|null $previous = null,
         public readonly int $position = 0,
     ) {
         parent::__construct($message, $code, $previous);

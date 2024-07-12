@@ -8,7 +8,7 @@ use Arokettu\ArithmeticParser\Helpers\NameHelper;
 
 final class Config
 {
-    private static ?Config $default = null;
+    private static Config|null $default = null;
 
     private array $functions = [];
     private array $operators = [];
