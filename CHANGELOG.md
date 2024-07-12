@@ -2,6 +2,15 @@
 
 ## 2.x
 
+### 2.1.0
+
+*Jul 12, 2024*
+
+* Added ``Validator`` class to catch problems valid for the parser but invalid for the calculator:
+  * Undefined variable
+  * Undefined function
+  * Not enough arguments passed to a function
+
 ### 2.0.1
 
 *Jun 21, 2024*
