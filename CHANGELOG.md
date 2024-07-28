@@ -2,6 +2,14 @@
 
 ## 2.x
 
+### 2.1.1
+
+*Jul 28, 2024*
+
+* Fixed runtime situations throwing logic exceptions
+  * `ValidationException` and `ParseException` now extend `UnexpectedValueException`
+  * `CalcCallException` now extends `RuntimeException`
+
 ### 2.1.0
 
 *Jul 12, 2024*
