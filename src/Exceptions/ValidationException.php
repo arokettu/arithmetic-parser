@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser\Exceptions;
 
-use DomainException;
+use UnexpectedValueException;
 
-abstract class ValidationException extends DomainException implements BaseException
+abstract class ValidationException extends UnexpectedValueException implements BaseException
 {
 }

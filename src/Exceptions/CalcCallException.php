@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser\Exceptions;
 
-use DomainException;
+use RuntimeException;
 
-final class CalcCallException extends DomainException implements BaseException
+final class CalcCallException extends RuntimeException implements BaseException
 {
 }
