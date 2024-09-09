@@ -123,7 +123,7 @@ class ValidatorTest extends TestCase
     {
         $parsed = (new Parser())->parse('a(b(), c()) + @D(1,2,3)');
         $config = Config::default();
-        $config->addFunctions(
+        $config->addFunctionsFromCallables(
             a: fn ($a, $b) => $a + $b,
             c: fn () => 123,
         );
@@ -138,7 +138,7 @@ class ValidatorTest extends TestCase
     {
         $parsed = (new Parser())->parse('a(1,2) + b(1,2)');
         $config = Config::default();
-        $config->addFunctions(
+        $config->addFunctionsFromCallables(
             a: fn ($a, $b) => $a + $b,
             b: fn ($a, $b, $c) => $a + $b + $c,
         );

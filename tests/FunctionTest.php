@@ -33,7 +33,7 @@ class FunctionTest extends TestCase
 
     public function testConfigCustomFunctionByCallable(): void
     {
-        $config = Config::default()->addFunctions(
+        $config = Config::default()->addFunctionsFromCallables(
             mul2: fn ($a) => $a * 2,
         );
         self::assertEquals(4, Calculator::evaluate('mul2(2)', $config));
@@ -77,7 +77,7 @@ class FunctionTest extends TestCase
         $func = [
             '1abc' => fn () => null,
         ];
-        $config->addFunctions(...$func);
+        $config->addFunctionsFromCallables(...$func);
     }
 
     public function testFindAllFunctions(): void

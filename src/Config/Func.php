@@ -17,6 +17,7 @@ final class Func
     public function __construct(
         public readonly string $name,
         callable $callable,
+        public readonly bool $lazy = false,
     ) {
         $this->normalizedName = NameHelper::normalizeFunc($name);
         NameHelper::assertName($this->normalizedName);

@@ -91,7 +91,7 @@ final class Parser
                 case Lexer\Token::T_NAME:
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_OPEN) {
                         // function call
-                        $stack->push($func = new Operation\FunctionCall($lexer->token->value, -1));
+                        $stack->push(new Operation\FunctionCall($lexer->token->value, -1));
                         // $funcs will be stored only when actual arity is determined
                     } else {
                         // variable name

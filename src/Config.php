@@ -17,7 +17,7 @@ final class Config
     {
         // add basic arithmetic functions
         return (new self())
-            ->addFunctions(
+            ->addFunctionsFromCallables(
                 // generic
                 abs: abs(...),
                 exp: exp(...),
@@ -48,8 +48,13 @@ final class Config
                 // constants
                 pi: fn () => M_PI,
                 e: fn () => M_E,
+            )->addFunctionsFromCallables(
+                lazy: true,
                 // compare
-                if: fn (float $check, float $then, float $else) => $check ? $then : $else,
+                if: fn (Argument\LazyArgument $check, Argument\LazyArgument $then, Argument\LazyArgument $else) =>
+                    $check->getValue() ?
+                    $then->getValue() :
+                    $else->getValue(),
             )->addOperators(
                 // arithmetic
 
@@ -167,14 +172,10 @@ final class Config
     /**
      * @return $this
      */
-    public function addFunctions(callable|Config\Func ...$functions): self
+    public function addFunctions(Config\Func ...$functions): self
     {
-        foreach ($functions as $name => $function) {
-            if ($function instanceof Config\Func) {
-                $this->addFunction($function);
-            } else {
-                $this->addFunctionFromCallable($name, $function(...));
-            }
+        foreach ($functions as $function) {
+            $this->addFunction($function);
         }
         return $this;
     }
@@ -182,9 +183,20 @@ final class Config
     /**
      * @return $this
      */
-    public function addFunctionFromCallable(string $name, callable $callable): self
+    public function addFunctionsFromCallables(bool $lazy = false, callable ...$functions): self
     {
-        return $this->addFunction(new Config\Func($name, $callable(...)));
+        foreach ($functions as $name => $function) {
+            $this->addFunctionFromCallable($name, $function(...), $lazy);
+        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function addFunctionFromCallable(string $name, callable $callable, bool $lazy = false): self
+    {
+        return $this->addFunction(new Config\Func($name, $callable(...), $lazy));
     }
 
     /**
@@ -244,7 +256,7 @@ final class Config
     /**
      * @return $this
      */
-    public function addOperators(Config\Operator ...$operators): self
+    public function addOperators(Config\BinaryOperator|Config\UnaryOperator ...$operators): self
     {
         foreach ($operators as $operator) {
             $this->addOperator($operator);

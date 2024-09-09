@@ -108,4 +108,18 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Not enough arguments for function call: x');
         (new Calculator($operations))->calc();
     }
+
+    public function testLazyFuncHandled(): void
+    {
+        self::assertEquals(2, Calculator::evaluate('if (a, b, c)', a: 1, b: 2, c: 3));
+        self::assertEquals(3, Calculator::evaluate('if (a, b, c)', a: 0, b: 2, c: 3));
+    }
+
+    public function testLazyFuncNotActuallyLazy(): void
+    {
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Variable c is not defined');
+
+        self::assertEquals(2, Calculator::evaluate('if (a, b, c)', a: 1, b: 2));
+    }
 }
