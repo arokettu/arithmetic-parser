@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
-use Arokettu\ArithmeticParser\Argument\ValueArgument;
 use RuntimeException;
 use SplStack;
 
@@ -17,18 +16,7 @@ final class Calculator
      */
     public function calc(float ...$vars): float
     {
-        $normalizedVars = [];
-
-        foreach ($vars as $name => $value) {
-            if (!\is_string($name)) {
-                throw new Exceptions\CalcCallException('Invalid variable name: ' . $name);
-            }
-            $normalizedName = Helpers\NameHelper::normalizeVar($name);
-            if (isset($normalizedVars[$normalizedName])) {
-                throw new Exceptions\CalcCallException('Duplicate variable name: ' . $name);
-            }
-            $normalizedVars[$normalizedName] = $value;
-        }
+        $normalizedVars = $this->normalizeVars($vars);
 
         $stack = new SplStack();
 
@@ -82,7 +70,10 @@ final class Calculator
         $func =
             $this->config->getFunctions()[$operation->normalizedName] ??
             throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
-        $callValues = array_reverse($func->lazy ? array_map(fn ($v) => new ValueArgument($v), $values) : $values);
+        $callValues = array_reverse($func->lazy ?
+            array_map(fn ($v) => new Argument\ValueArgument($v), $values) :
+            $values
+        );
         $stack->push(($func->callable)(...$callValues));
     }
 

@@ -52,4 +52,21 @@ trait BaseCalculator
         return self::parse($expression, $config)->calc(...$vars);
     }
 
+    private function normalizeVars(array $vars): array
+    {
+        $normalizedVars = [];
+
+        foreach ($vars as $name => $value) {
+            if (!\is_string($name)) {
+                throw new Exceptions\CalcCallException('Invalid variable name: ' . $name);
+            }
+            $normalizedName = Helpers\NameHelper::normalizeVar($name);
+            if (isset($normalizedVars[$normalizedName])) {
+                throw new Exceptions\CalcCallException('Duplicate variable name: ' . $name);
+            }
+            $normalizedVars[$normalizedName] = $value;
+        }
+
+        return $normalizedVars;
+    }
 }
