@@ -144,6 +144,16 @@ final class Config
                     Config\BinaryOperator::PRIORITY_OR,
                     Config\BinaryAssoc::LEFT,
                 ),
+                new Config\UnaryOperator(
+                    'not',
+                    fn (float $a): float => \intval(!$a),
+                    Config\UnaryPos::PREFIX,
+                ),
+                new Config\UnaryOperator(
+                    'NOT',
+                    fn (float $a): float => \intval(!$a),
+                    Config\UnaryPos::PREFIX,
+                ),
             );
     }
 
