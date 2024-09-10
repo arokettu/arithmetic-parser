@@ -9,6 +9,7 @@ use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Config\UnaryOperator;
 use Arokettu\ArithmeticParser\Config\UnaryPos;
 use Arokettu\ArithmeticParser\Exceptions\ParseException;
+use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Operation\BinaryOperator as BinaryOp;
 use Arokettu\ArithmeticParser\Operation\Number;
 use Arokettu\ArithmeticParser\Operation\UnaryOperator as UnaryOp;
@@ -21,6 +22,9 @@ class PlusMinusTest extends TestCase
     {
         self::assertEquals(2 + 3, Calculator::evaluate('2 + 3'));
         self::assertEquals(2 - 3, Calculator::evaluate('2 - 3'));
+
+        self::assertEquals(2 + 3, LazyCalculator::evaluate('2 + 3'));
+        self::assertEquals(2 - 3, LazyCalculator::evaluate('2 - 3'));
     }
 
     public function testUnaryOperators(): void
@@ -29,6 +33,11 @@ class PlusMinusTest extends TestCase
         self::assertEquals(5, Calculator::evaluate('+(2+3)'));
         self::assertEquals(-2, Calculator::evaluate('-2'));
         self::assertEquals(-5, Calculator::evaluate('-(2+3)'));
+
+        self::assertEquals(2, LazyCalculator::evaluate('2'));
+        self::assertEquals(5, LazyCalculator::evaluate('+(2+3)'));
+        self::assertEquals(-2, LazyCalculator::evaluate('-2'));
+        self::assertEquals(-5, LazyCalculator::evaluate('-(2+3)'));
     }
 
     public function testParsing(): void
@@ -57,17 +66,22 @@ class PlusMinusTest extends TestCase
         );
 
         // postfix
-        $val = Calculator::evaluate('-2?! + -2!?', $config);
-        self::assertEquals(-(2 * 2 + 2) + -((2 + 2) * 2), $val);
+        $valC = Calculator::evaluate('-2?! + -2!?', $config);
+        $valL = LazyCalculator::evaluate('-2?! + -2!?', $config);
+        self::assertEquals(-(2 * 2 + 2) + -((2 + 2) * 2), $valC);
+        self::assertEquals(-(2 * 2 + 2) + -((2 + 2) * 2), $valL);
 
         // prefix
-        $val = Calculator::evaluate('¿-¡2 + ¡+¿2', $config);
-        self::assertEquals(-(2 + 2) * 2 + (+(2 * 2) + 2), $val);
+        $valC = Calculator::evaluate('¿-¡2 + ¡+¿2', $config);
+        $valL = Calculator::evaluate('¿-¡2 + ¡+¿2', $config);
+        self::assertEquals(-(2 + 2) * 2 + (+(2 * 2) + 2), $valC);
+        self::assertEquals(-(2 + 2) * 2 + (+(2 * 2) + 2), $valL);
     }
 
     public function testBinaryCombination(): void
     {
         self::assertEquals(4, Calculator::evaluate('-2 * -2'));
+        self::assertEquals(4, LazyCalculator::evaluate('-2 * -2'));
     }
 
     public function testBinaryInvalidCombination(): void
@@ -76,5 +90,13 @@ class PlusMinusTest extends TestCase
         $this->expectExceptionMessage('Binary operator (-) missing second argument at position 1');
 
         Calculator::evaluate('2- * 2-');
+    }
+
+    public function testBinaryInvalidCombinationLazy(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Binary operator (-) missing second argument at position 1');
+
+        LazyCalculator::evaluate('2- * 2-');
     }
 }

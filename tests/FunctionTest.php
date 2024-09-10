@@ -7,6 +7,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Operation\FunctionCall;
 use Arokettu\ArithmeticParser\Parser;
 use DomainException;
@@ -19,8 +20,13 @@ class FunctionTest extends TestCase
         self::assertEquals(2, Calculator::evaluate('abs(1 - 3)'));
         self::assertEquals(2, Calculator::evaluate('abs(3 - 1)'));
 
+        self::assertEquals(2, LazyCalculator::evaluate('abs(1 - 3)'));
+        self::assertEquals(2, LazyCalculator::evaluate('abs(3 - 1)'));
+
         // prefix
         self::assertEquals(2, Calculator::evaluate('@abs(3 - 1)'));
+
+        self::assertEquals(2, LazyCalculator::evaluate('@abs(3 - 1)'));
     }
 
     public function testMissingFunc(): void
@@ -29,6 +35,19 @@ class FunctionTest extends TestCase
         $this->expectExceptionMessage('Undefined function: MyFunc');
 
         Calculator::evaluate('MyFunc(1) + 3');
+    }
+
+    public function testMissingFuncLazy(): void
+    {
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Undefined function: MyFunc');
+
+        LazyCalculator::evaluate('MyFunc(1) + 3');
+    }
+
+    public function testMissingFuncHiddenByLazy(): void
+    {
+        self::assertEquals(1, LazyCalculator::evaluate('1 or MyFunc(1) + 3'));
     }
 
     public function testConfigCustomFunctionByCallable(): void
