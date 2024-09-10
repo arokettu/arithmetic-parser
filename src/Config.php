@@ -126,27 +126,35 @@ final class Config
                 // logic
                 new Config\BinaryOperator(
                     'and',
-                    fn (float $a, float $b): float => \intval($a && $b),
+                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                        \intval($a->getValue() && $b->getValue()),
                     Config\BinaryPriority::AND,
                     Config\BinaryAssoc::LEFT,
+                    lazy: true,
                 ),
                 new Config\BinaryOperator(
                     'AND',
-                    fn (float $a, float $b): float => \intval($a && $b),
+                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                        \intval($a->getValue() && $b->getValue()),
                     Config\BinaryPriority::AND,
                     Config\BinaryAssoc::LEFT,
+                    lazy: true,
                 ),
                 new Config\BinaryOperator(
                     'or',
-                    fn (float $a, float $b): float => \intval($a || $b),
+                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                        \intval($a->getValue() || $b->getValue()),
                     Config\BinaryPriority::OR,
                     Config\BinaryAssoc::LEFT,
+                    lazy: true,
                 ),
                 new Config\BinaryOperator(
                     'OR',
-                    fn (float $a, float $b): float => \intval($a || $b),
+                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                        \intval($a->getValue() || $b->getValue()),
                     Config\BinaryPriority::OR,
                     Config\BinaryAssoc::LEFT,
+                    lazy: true,
                 ),
                 new Config\UnaryOperator(
                     'not',
