@@ -14,6 +14,7 @@
 * `addFunctions()` no longer accepts callables, use `addFunctionsFromCallables()`
 * Default config additions:
   * `NOT` operator
+  * Functions returning special constants: `true()`, `false()`, `nan()`, `inf()`
 * Binary operator priorities moved to a separate class, `Arokettu\ArithmeticParser\Config\BinaryPriority`
   * `BinaryOperator::PRIORITY_*` constants are deprecated
 
