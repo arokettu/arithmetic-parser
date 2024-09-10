@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use Closure;
 use RuntimeException;
 use SplStack;
 
@@ -35,7 +36,7 @@ final class LazyCalculator
                     $this->performBinaryOperator($operation, $stack);
                     break;
                 case $operation instanceof Operation\UnaryOperator:
-                    $this->performUnaryOperator($operation, $stack);
+                    $this->treeifyUnaryOperator($operation, $stack);
                     break;
                 default:
                     throw new Exceptions\CalcCallException('Invalid operation: ' . get_debug_type($operation));
@@ -103,5 +104,51 @@ final class LazyCalculator
                 return ($func->callable)(...$callValues);
             }
         });
+    }
+
+    private function treeifyUnaryOperator(Operation\UnaryOperator $operation, SplStack $stack): void
+    {
+        try {
+            $arg = $stack->pop();
+        } catch (RuntimeException) {
+            throw new Exceptions\CalcCallException("Not enough arguments for unary operator: {$operation->operator}");
+        }
+
+        switch ($operation->operator) {
+            case '+':
+                $stack->push($arg); // noop
+                break;
+            case '-':
+                $stack->push(new class ($arg) implements Argument\LazyArgument {
+                    public function __construct(
+                        private readonly Argument\LazyArgument $arg,
+                    ) {
+                    }
+
+                    public function getValue(): float
+                    {
+                        return -$this->arg->getValue();
+                    }
+                });
+                break;
+            default:
+                $operator = $this->config->getOperators()[$operation->operator] ?? null;
+                if ($operator instanceof Config\UnaryOperator) {
+                    $stack->push(new class ($arg, $operator->callable) implements Argument\LazyArgument {
+                        public function __construct(
+                            private readonly Argument\LazyArgument $a,
+                            private readonly Closure $callable,
+                        ) {
+                        }
+
+                        public function getValue(): float
+                        {
+                            return ($this->callable)($this->a->getValue());
+                        }
+                    });
+                    break;
+                }
+                throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");
+        }
     }
 }

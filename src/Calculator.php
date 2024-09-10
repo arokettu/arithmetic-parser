@@ -70,7 +70,8 @@ final class Calculator
         $func =
             $this->config->getFunctions()[$operation->normalizedName] ??
             throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
-        $callValues = array_reverse($func->lazy ?
+        $callValues = array_reverse(
+            $func->lazy ?
             array_map(fn ($v) => new Argument\ValueArgument($v), $values) :
             $values
         );
