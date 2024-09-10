@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.x
+
+### 3.0.0
+
+*upcoming*
+
+* LazyCalculator: allows lazy operators and lazy functions
+  * Lazy binary and unary operators
+  * Lazy functions
+  * `AND` and `OR` operators are now lazy
+  * `if()` is now lazy
+* `addFunctions()` no longer accepts callables, use `addFunctionsFromCallables()`
+* Default config additions:
+  * `NOT` operator
+* Binary operator priorities moved to a separate class, `Arokettu\ArithmeticParser\Config\BinaryPriority`
+  * `BinaryOperator::PRIORITY_*` constants are deprecated
+
 ## 2.x
 
 ### 2.1.1
