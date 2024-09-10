@@ -8,6 +8,7 @@ use Arokettu\ArithmeticParser\Argument\LazyArgument;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Operation\BinaryOperator;
 use Arokettu\ArithmeticParser\Operation\Bracket;
 use Arokettu\ArithmeticParser\Operation\FunctionCall;
@@ -31,6 +32,20 @@ class CalculatorEdgeCasesTest extends TestCase
         (new Calculator($operations))->calc();
     }
 
+    public function testWrongLengthLazy(): void
+    {
+        $operations = [
+            new Number(1),
+            new Number(2),
+            new Number(3),
+            new BinaryOperator('+'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Operation sequence is invalid');
+        (new LazyCalculator($operations))->calc();
+    }
+
     public function testWrongOperator(): void
     {
         $operations = [
@@ -42,6 +57,18 @@ class CalculatorEdgeCasesTest extends TestCase
         (new Calculator($operations))->calc();
     }
 
+    public function testWrongOperatorLazy(): void
+    {
+        $operations = [
+            new Bracket(),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Invalid operation: Arokettu\ArithmeticParser\Operation\Bracket');
+        (new LazyCalculator($operations))->calc();
+    }
+
+
     public function testWrongArity(): void
     {
         $operations = [
@@ -51,6 +78,17 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Invalid function arity, likely parser failure: test');
         (new Calculator($operations))->calc();
+    }
+
+    public function testWrongArityLazy(): void
+    {
+        $operations = [
+            new FunctionCall('test', -1),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Invalid function arity, likely parser failure: test');
+        (new LazyCalculator($operations))->calc();
     }
 
     public function testWrongBinaryOperator(): void
@@ -66,6 +104,19 @@ class CalculatorEdgeCasesTest extends TestCase
         (new Calculator($operations))->calc();
     }
 
+    public function testWrongBinaryOperatorLazy(): void
+    {
+        $operations = [
+            new Number(1),
+            new Number(2),
+            new BinaryOperator('x'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Undefined binary operator: x');
+        (new LazyCalculator($operations))->calc();
+    }
+
     public function testWrongUnaryOperator(): void
     {
         $operations = [
@@ -76,6 +127,18 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Undefined unary operator: x');
         (new Calculator($operations))->calc();
+    }
+
+    public function testWrongUnaryOperatorLazy(): void
+    {
+        $operations = [
+            new Number(1),
+            new UnaryOperator('x'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Undefined unary operator: x');
+        (new LazyCalculator($operations))->calc();
     }
 
     public function testNotEnoughArgsForUnary(): void
@@ -89,6 +152,17 @@ class CalculatorEdgeCasesTest extends TestCase
         (new Calculator($operations))->calc();
     }
 
+    public function testNotEnoughArgsForUnaryLazy(): void
+    {
+        $operations = [
+            new UnaryOperator('x'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Not enough arguments for unary operator: x');
+        (new LazyCalculator($operations))->calc();
+    }
+
     public function testNotEnoughArgsForBinary(): void
     {
         $operations = [
@@ -98,6 +172,17 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Not enough arguments for binary operator: x');
         (new Calculator($operations))->calc();
+    }
+
+    public function testNotEnoughArgsForBinaryLazy(): void
+    {
+        $operations = [
+            new BinaryOperator('x'),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Not enough arguments for binary operator: x');
+        (new LazyCalculator($operations))->calc();
     }
 
     public function testNotEnoughArgsForFunc(): void
@@ -111,10 +196,27 @@ class CalculatorEdgeCasesTest extends TestCase
         (new Calculator($operations))->calc();
     }
 
+    public function testNotEnoughArgsForFuncLazy(): void
+    {
+        $operations = [
+            new FunctionCall('x', 1),
+        ];
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Not enough arguments for function call: x');
+        (new LazyCalculator($operations))->calc();
+    }
+
     public function testLazyFuncHandled(): void
     {
         self::assertEquals(2, Calculator::evaluate('if (a, b, c)', a: 1, b: 2, c: 3));
         self::assertEquals(3, Calculator::evaluate('if (a, b, c)', a: 0, b: 2, c: 3));
+
+        self::assertEquals(2, LazyCalculator::evaluate('if (a, b, c)', a: 1, b: 2, c: 3));
+        self::assertEquals(3, LazyCalculator::evaluate('if (a, b, c)', a: 0, b: 2, c: 3));
+
+        // lazy when lazy
+        self::assertEquals(2, LazyCalculator::evaluate('if (a, b, c)', a: 1, b: 2));
     }
 
     public function testLazyFuncNotActuallyLazy(): void
@@ -122,7 +224,7 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Variable c is not defined');
 
-        self::assertEquals(2, Calculator::evaluate('if (a, b, c)', a: 1, b: 2));
+        Calculator::evaluate('if (a, b, c)', a: 1, b: 2);
     }
 
     public function testLazyUnaryOperatorHandled(): void
@@ -141,6 +243,10 @@ class CalculatorEdgeCasesTest extends TestCase
         ));
 
         self::assertEquals(1, Calculator::evaluate('a?', $config, a: 1));
+        self::assertEquals(1, LazyCalculator::evaluate('a?', $config, a: 1));
+
+        // lazy when lazy
+        self::assertEquals(0, LazyCalculator::evaluate('a?', $config));
     }
 
     public function testLazyUnaryOperatorNotActuallyLazy(): void
@@ -161,7 +267,7 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Variable a is not defined');
 
-        self::assertEquals(1, Calculator::evaluate('a?', $config));
+        Calculator::evaluate('a?', $config);
     }
 
     public function testLazyBinaryOperatorHandled(): void
@@ -181,6 +287,12 @@ class CalculatorEdgeCasesTest extends TestCase
 
         self::assertEquals(2, Calculator::evaluate('2 || a', $config, a: 3));
         self::assertEquals(3, Calculator::evaluate('0 || a', $config, a: 3));
+
+        self::assertEquals(2, LazyCalculator::evaluate('2 || a', $config, a: 3));
+        self::assertEquals(3, LazyCalculator::evaluate('0 || a', $config, a: 3));
+
+        // lazy when lazy
+        self::assertEquals(2, LazyCalculator::evaluate('2 || a', $config));
     }
 
     public function testLazyBinaryOperatorNotActuallyLazy(): void
@@ -201,6 +313,6 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectException(CalcCallException::class);
         $this->expectExceptionMessage('Variable a is not defined');
 
-        self::assertEquals(2, Calculator::evaluate('2 || a', $config));
+        Calculator::evaluate('2 || a', $config);
     }
 }
