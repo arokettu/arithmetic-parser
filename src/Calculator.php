@@ -98,7 +98,11 @@ final class Calculator
             default:
                 $operator = $this->config->getOperators()[$operation->operator] ?? null;
                 if ($operator instanceof Config\BinaryOperator) {
-                    $stack->push(($operator->callable)($value1, $value2));
+                    if ($operator->lazy) {
+                        $stack->push(($operator->callable)(new ValueArgument($value1), new ValueArgument($value2)));
+                    } else {
+                        $stack->push(($operator->callable)($value1, $value2));
+                    }
                     break;
                 }
                 throw new Exceptions\CalcCallException("Undefined binary operator: {$operation->operator}");
@@ -123,7 +127,11 @@ final class Calculator
             default:
                 $operator = $this->config->getOperators()[$operation->operator] ?? null;
                 if ($operator instanceof Config\UnaryOperator) {
-                    $stack->push(($operator->callable)($value));
+                    if ($operator->lazy) {
+                        $stack->push(($operator->callable)(new ValueArgument($value)));
+                    } else {
+                        $stack->push(($operator->callable)($value));
+                    }
                     break;
                 }
                 throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");

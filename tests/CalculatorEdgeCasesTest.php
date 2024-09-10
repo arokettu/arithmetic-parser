@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser\Tests;
 
+use Arokettu\ArithmeticParser\Argument\LazyArgument;
 use Arokettu\ArithmeticParser\Calculator;
+use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
 use Arokettu\ArithmeticParser\Operation\BinaryOperator;
 use Arokettu\ArithmeticParser\Operation\Bracket;
@@ -121,5 +123,84 @@ class CalculatorEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Variable c is not defined');
 
         self::assertEquals(2, Calculator::evaluate('if (a, b, c)', a: 1, b: 2));
+    }
+
+    public function testLazyUnaryOperatorHandled(): void
+    {
+        $config = Config::default();
+        $config->addOperator(new Config\UnaryOperator(
+            '?',
+            function (LazyArgument $a) {
+                try {
+                    return $a->getValue();
+                } catch (CalcCallException) {
+                    return 0;
+                }
+            },
+            lazy: true,
+        ));
+
+        self::assertEquals(1, Calculator::evaluate('a?', $config, a: 1));
+    }
+
+    public function testLazyUnaryOperatorNotActuallyLazy(): void
+    {
+        $config = Config::default();
+        $config->addOperator(new Config\UnaryOperator(
+            '?',
+            function (LazyArgument $a) {
+                try {
+                    return $a->getValue();
+                } catch (CalcCallException) {
+                    return 0;
+                }
+            },
+            lazy: true,
+        ));
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Variable a is not defined');
+
+        self::assertEquals(1, Calculator::evaluate('a?', $config));
+    }
+
+    public function testLazyBinaryOperatorHandled(): void
+    {
+        $config = Config::default();
+        $config->addOperator(new Config\BinaryOperator(
+            '||',
+            function (LazyArgument $a, LazyArgument $b) {
+                if (($v = $a->getValue())) {
+                    return $v;
+                }
+                return $b->getValue();
+            },
+            priority: Config\BinaryPriority::OR,
+            lazy: true,
+        ));
+
+        self::assertEquals(2, Calculator::evaluate('2 || a', $config, a: 3));
+        self::assertEquals(3, Calculator::evaluate('0 || a', $config, a: 3));
+    }
+
+    public function testLazyBinaryOperatorNotActuallyLazy(): void
+    {
+        $config = Config::default();
+        $config->addOperator(new Config\BinaryOperator(
+            '||',
+            function (LazyArgument $a, LazyArgument $b) {
+                if (($v = $a->getValue())) {
+                    return $v;
+                }
+                return $b->getValue();
+            },
+            priority: Config\BinaryPriority::OR,
+            lazy: true,
+        ));
+
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Variable a is not defined');
+
+        self::assertEquals(2, Calculator::evaluate('2 || a', $config));
     }
 }
