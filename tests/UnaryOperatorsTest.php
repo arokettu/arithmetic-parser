@@ -8,6 +8,7 @@ use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Config\UnaryOperator;
 use Arokettu\ArithmeticParser\Config\UnaryPos;
+use Arokettu\ArithmeticParser\LazyCalculator;
 use PHPUnit\Framework\TestCase;
 
 class UnaryOperatorsTest extends TestCase
@@ -21,10 +22,14 @@ class UnaryOperatorsTest extends TestCase
 
         // right to left
         $calc = Calculator::evaluate('¡¿2', $config);
+        $lazy = LazyCalculator::evaluate('¡¿2', $config);
         self::assertEquals(2 * 3 + 5, $calc);
+        self::assertEquals(2 * 3 + 5, $lazy);
 
         $calc = Calculator::evaluate('¿¡2', $config);
+        $lazy = LazyCalculator::evaluate('¿¡2', $config);
         self::assertEquals((2 + 5) * 3, $calc);
+        self::assertEquals((2 + 5) * 3, $lazy);
     }
 
     public function testPostfixOrder(): void
@@ -36,10 +41,14 @@ class UnaryOperatorsTest extends TestCase
 
         // right to left
         $calc = Calculator::evaluate('2?!', $config);
+        $lazy = LazyCalculator::evaluate('2?!', $config);
         self::assertEquals(2 * 3 + 5, $calc);
+        self::assertEquals(2 * 3 + 5, $lazy);
 
         $calc = Calculator::evaluate('2!?', $config);
+        $lazy = LazyCalculator::evaluate('2!?', $config);
         self::assertEquals((2 + 5) * 3, $calc);
+        self::assertEquals((2 + 5) * 3, $lazy);
     }
 
     public function testMixedOrder(): void
@@ -51,10 +60,14 @@ class UnaryOperatorsTest extends TestCase
 
         // postfix first
         $calc = Calculator::evaluate('¿2?', $config);
+        $lazy = LazyCalculator::evaluate('¿2?', $config);
         self::assertEquals(2 * 3 + 5, $calc);
+        self::assertEquals(2 * 3 + 5, $lazy);
 
         // alter with brackets
         $calc = Calculator::evaluate('(¿2)?', $config);
+        $lazy = LazyCalculator::evaluate('(¿2)?', $config);
         self::assertEquals((2 + 5) * 3, $calc);
+        self::assertEquals((2 + 5) * 3, $lazy);
     }
 }
