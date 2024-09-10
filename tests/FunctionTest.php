@@ -50,6 +50,14 @@ class FunctionTest extends TestCase
         self::assertEquals(1, LazyCalculator::evaluate('1 or MyFunc(1) + 3'));
     }
 
+    public function testMissingFuncHiddenByLazyInNonLazyStillThrows(): void
+    {
+        $this->expectException(CalcCallException::class);
+        $this->expectExceptionMessage('Undefined function: MyFunc');
+
+        Calculator::evaluate('1 or MyFunc(1) + 3');
+    }
+
     public function testConfigCustomFunctionByCallable(): void
     {
         $config = Config::default()->addFunctionsFromCallables(
