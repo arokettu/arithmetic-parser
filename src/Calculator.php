@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use Arokettu\ArithmeticParser\Argument\ValueArgument;
 use RuntimeException;
 use SplStack;
 

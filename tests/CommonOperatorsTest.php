@@ -15,7 +15,7 @@ class CommonOperatorsTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Operator symbol must not be an empty string');
 
-        new Config\BinaryOperator('', fn ($a, $b) => $a + $b, Config\BinaryOperator::PRIORITY_ADD);
+        new Config\BinaryOperator('', fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD);
     }
 
     public function testNoPlusOperator(): void
@@ -23,7 +23,7 @@ class CommonOperatorsTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('+ and - are reserved and cannot be configured');
 
-        new Config\BinaryOperator('+', fn ($a, $b) => $a + $b, Config\BinaryOperator::PRIORITY_ADD);
+        new Config\BinaryOperator('+', fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD);
     }
 
     public function testNoBracketOperator(): void
@@ -31,7 +31,7 @@ class CommonOperatorsTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Brackets ( and ) are reserved and cannot be configured');
 
-        new Config\BinaryOperator('(', fn ($a, $b) => $a + $b, Config\BinaryOperator::PRIORITY_ADD);
+        new Config\BinaryOperator('(', fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD);
     }
 
     public function testNoCommaOperator(): void
@@ -39,7 +39,7 @@ class CommonOperatorsTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Comma (,) is reserved and cannot be configured');
 
-        new Config\BinaryOperator(',', fn ($a, $b) => $a + $b, Config\BinaryOperator::PRIORITY_ADD);
+        new Config\BinaryOperator(',', fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD);
     }
 
     public function testNoForbiddenCharsOperator(): void
@@ -47,6 +47,6 @@ class CommonOperatorsTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Operator symbol must not contain digits, dots, and spaces');
 
-        new Config\BinaryOperator('0 .', fn ($a, $b) => $a + $b, Config\BinaryOperator::PRIORITY_ADD);
+        new Config\BinaryOperator('0 .', fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD);
     }
 }

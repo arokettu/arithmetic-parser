@@ -8,12 +8,18 @@ use Arokettu\ArithmeticParser\Helpers\OperatorHelper;
 
 final class BinaryOperator implements Operator
 {
-    public const PRIORITY_OR = 1000;
-    public const PRIORITY_AND = 2000;
-    public const PRIORITY_COMPARE = 3000;
-    public const PRIORITY_ADD = 4000;
-    public const PRIORITY_MUL = 5000;
-    public const PRIORITY_POW = 6000;
+    /** @deprecated BinaryPriority::OR */
+    public const PRIORITY_OR = BinaryPriority::OR;
+    /** @deprecated BinaryPriority::AND */
+    public const PRIORITY_AND = BinaryPriority::AND;
+    /** @deprecated BinaryPriority::COMPARE */
+    public const PRIORITY_COMPARE = BinaryPriority::COMPARE;
+    /** @deprecated BinaryPriority::ADD */
+    public const PRIORITY_ADD = BinaryPriority::ADD;
+    /** @deprecated BinaryPriority::MUL */
+    public const PRIORITY_MUL = BinaryPriority::MUL;
+    /** @deprecated BinaryPriority::POW */
+    public const PRIORITY_POW = BinaryPriority::POW;
 
     public function __construct(
         public readonly string $symbol,
