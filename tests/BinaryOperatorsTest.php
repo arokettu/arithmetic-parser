@@ -7,6 +7,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\ParseException;
+use Arokettu\ArithmeticParser\LazyCalculator;
 use PHPUnit\Framework\TestCase;
 
 class BinaryOperatorsTest extends TestCase
@@ -15,6 +16,9 @@ class BinaryOperatorsTest extends TestCase
     {
         self::assertEquals(2 * 3, Calculator::evaluate('2 * 3'));
         self::assertEquals(2 / 3, Calculator::evaluate('2 / 3'));
+
+        self::assertEquals(2 * 3, LazyCalculator::evaluate('2 * 3'));
+        self::assertEquals(2 / 3, LazyCalculator::evaluate('2 / 3'));
     }
 
     public function testDivByZero(): void
@@ -24,11 +28,22 @@ class BinaryOperatorsTest extends TestCase
         Calculator::evaluate('1/0');
     }
 
+    public function testDivByZeroLazy(): void
+    {
+        $this->expectException(\DivisionByZeroError::class);
+
+        LazyCalculator::evaluate('1/0');
+    }
+
     public function testPriorityAndBrackets(): void
     {
         self::assertEquals(6, Calculator::evaluate('2 + 2 * 2'));
         self::assertEquals(8, Calculator::evaluate('(2 + 2) * 2'));
         self::assertEquals(6, Calculator::evaluate('2 + (2 * 2)'));
+
+        self::assertEquals(6, LazyCalculator::evaluate('2 + 2 * 2'));
+        self::assertEquals(8, LazyCalculator::evaluate('(2 + 2) * 2'));
+        self::assertEquals(6, LazyCalculator::evaluate('2 + (2 * 2)'));
     }
 
     public function testLeftAssociative(): void
@@ -37,9 +52,11 @@ class BinaryOperatorsTest extends TestCase
             new Config\BinaryOperator('^', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::LEFT)
         );
 
-        $eval = Calculator::evaluate('2 ^ 3 ^ 4', $config);
+        $calc = Calculator::evaluate('2 ^ 3 ^ 4', $config);
+        $lazy = LazyCalculator::evaluate('2 ^ 3 ^ 4', $config);
 
-        self::assertEquals((2 ** 3) ** 4, $eval);
+        self::assertEquals((2 ** 3) ** 4, $calc);
+        self::assertEquals((2 ** 3) ** 4, $lazy);
     }
 
     public function testRightAssociative(): void
@@ -48,9 +65,11 @@ class BinaryOperatorsTest extends TestCase
             new Config\BinaryOperator('^', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::RIGHT)
         );
 
-        $eval = Calculator::evaluate('2 ^ 3 ^ 4', $config);
+        $calc = Calculator::evaluate('2 ^ 3 ^ 4', $config);
+        $lazy = Calculator::evaluate('2 ^ 3 ^ 4', $config);
 
-        self::assertEquals(2 ** 3 ** 4, $eval);
+        self::assertEquals(2 ** 3 ** 4, $calc);
+        self::assertEquals(2 ** 3 ** 4, $lazy);
     }
 
     public function testMulticharOperators(): void
@@ -60,9 +79,11 @@ class BinaryOperatorsTest extends TestCase
         );
 
         // ** should take precedence over *
-        $eval = Calculator::evaluate('2 * 3 ** 4', $config);
+        $calc = Calculator::evaluate('2 * 3 ** 4', $config);
+        $lazy = Calculator::evaluate('2 * 3 ** 4', $config);
 
-        self::assertEquals(2 * 3 ** 4, $eval);
+        self::assertEquals(2 * 3 ** 4, $calc);
+        self::assertEquals(2 * 3 ** 4, $lazy);
     }
 
     public function testAlphaOperators(): void
@@ -73,9 +94,11 @@ class BinaryOperatorsTest extends TestCase
         );
 
         // ** should take precedence over *
-        $eval = Calculator::evaluate('2 add 2 mul 2', $config);
+        $calc = Calculator::evaluate('2 add 2 mul 2', $config);
+        $lazy = Calculator::evaluate('2 add 2 mul 2', $config);
 
-        self::assertEquals(2 + 2 * 2, $eval);
+        self::assertEquals(2 + 2 * 2, $calc);
+        self::assertEquals(2 + 2 * 2, $lazy);
     }
 
     public function testConfigRemoveOperator(): void
