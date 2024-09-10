@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
-use Closure;
 use RuntimeException;
 use SplStack;
 
@@ -33,7 +32,7 @@ final class LazyCalculator
                     $this->treeifyFunction($operation, $stack);
                     break;
                 case $operation instanceof Operation\BinaryOperator:
-                    $this->performBinaryOperator($operation, $stack);
+                    $this->treeifyBinaryOperator($operation, $stack);
                     break;
                 case $operation instanceof Operation\UnaryOperator:
                     $this->treeifyUnaryOperator($operation, $stack);
@@ -106,6 +105,32 @@ final class LazyCalculator
         });
     }
 
+    private function treeifyBinaryOperator(Operation\BinaryOperator $operation, SplStack $stack): void
+    {
+        try {
+            $value2 = $stack->pop();
+            $value1 = $stack->pop();
+        } catch (RuntimeException) {
+            throw new Exceptions\CalcCallException("Not enough arguments for binary operator: {$operation->operator}");
+        }
+
+        switch ($operation->operator) {
+            case '+':
+                $stack->push(new Argument\BinaryOpArgument(fn ($a, $b) => $a + $b, $value1, $value2, false));
+                break;
+            case '-':
+                $stack->push(new Argument\BinaryOpArgument(fn ($a, $b) => $a - $b, $value1, $value2, false));
+                break;
+            default:
+                $operator = $this->config->getOperators()[$operation->operator] ?? null;
+                if ($operator instanceof Config\BinaryOperator) {
+                    $stack->push(new Argument\BinaryOpArgument($operator->callable, $value1, $value2, $operator->lazy));
+                    break;
+                }
+                throw new Exceptions\CalcCallException("Undefined binary operator: {$operation->operator}");
+        }
+    }
+
     private function treeifyUnaryOperator(Operation\UnaryOperator $operation, SplStack $stack): void
     {
         try {
@@ -119,33 +144,12 @@ final class LazyCalculator
                 $stack->push($arg); // noop
                 break;
             case '-':
-                $stack->push(new class ($arg) implements Argument\LazyArgument {
-                    public function __construct(
-                        private readonly Argument\LazyArgument $arg,
-                    ) {
-                    }
-
-                    public function getValue(): float
-                    {
-                        return -$this->arg->getValue();
-                    }
-                });
+                $stack->push(new Argument\UnaryOpArgument(fn ($v) => -$v, $arg, false));
                 break;
             default:
                 $operator = $this->config->getOperators()[$operation->operator] ?? null;
                 if ($operator instanceof Config\UnaryOperator) {
-                    $stack->push(new class ($arg, $operator->callable) implements Argument\LazyArgument {
-                        public function __construct(
-                            private readonly Argument\LazyArgument $a,
-                            private readonly Closure $callable,
-                        ) {
-                        }
-
-                        public function getValue(): float
-                        {
-                            return ($this->callable)($this->a->getValue());
-                        }
-                    });
+                    $stack->push(new Argument\UnaryOpArgument($operator->callable, $arg, $operator->lazy));
                     break;
                 }
                 throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");

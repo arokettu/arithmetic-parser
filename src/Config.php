@@ -48,6 +48,10 @@ final class Config
                 // constants
                 pi: fn () => M_PI,
                 e: fn () => M_E,
+                true: fn () => 1,
+                false: fn () => 0,
+                nan: fn () => NAN,
+                inf: fn () => INF,
             )->addFunctionsFromCallables(
                 lazy: true,
                 // compare
