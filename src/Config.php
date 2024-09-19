@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser;
 
+use Arokettu\ArithmeticParser\Exceptions\UndefinedVariableException;
 use Arokettu\ArithmeticParser\Helpers\NameHelper;
 
 final class Config
@@ -59,6 +60,14 @@ final class Config
                     $check->getValue() ?
                     $then->getValue() :
                     $else->getValue(),
+                defined: function (Argument\LazyArgument $argument): float {
+                    try {
+                        $argument->getValue();
+                        return 1;
+                    } catch (UndefinedVariableException) {
+                        return 0;
+                    }
+                },
             )->addOperators(
                 // arithmetic
 
