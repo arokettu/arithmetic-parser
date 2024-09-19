@@ -6,6 +6,6 @@ namespace Arokettu\ArithmeticParser\Exceptions;
 
 use UnexpectedValueException;
 
-abstract class ValidationException extends UnexpectedValueException implements BaseException
+abstract class ValidationException extends UnexpectedValueException implements BaseRuntimeException
 {
 }

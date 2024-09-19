@@ -8,6 +8,7 @@ trait BaseCalculator
 {
     /**
      * @throws Exceptions\CalcCallException
+     * @throws Exceptions\CalcConfigException
      */
     abstract public function calc(float ...$vars): float;
 
@@ -45,7 +46,7 @@ trait BaseCalculator
 
     /**
      * @throws Exceptions\ParseException
-     * @throws Exceptions\CalcCallException
+     * @throws Exceptions\CalcConfigException
      */
     public static function evaluate(string $expression, Config|null $config = null, float ...$vars): float
     {
@@ -58,11 +59,11 @@ trait BaseCalculator
 
         foreach ($vars as $name => $value) {
             if (!\is_string($name)) {
-                throw new Exceptions\CalcCallException('Invalid variable name: ' . $name);
+                throw new Exceptions\CalcConfigException('Invalid variable name: ' . $name);
             }
             $normalizedName = Helpers\NameHelper::normalizeVar($name);
             if (isset($normalizedVars[$normalizedName])) {
-                throw new Exceptions\CalcCallException('Duplicate variable name: ' . $name);
+                throw new Exceptions\CalcConfigException('Duplicate variable name: ' . $name);
             }
             $normalizedVars[$normalizedName] = $value;
         }

@@ -6,6 +6,6 @@ namespace Arokettu\ArithmeticParser\Exceptions;
 
 use RuntimeException;
 
-final class CalcCallException extends RuntimeException implements BaseException
+abstract class CalcCallException extends RuntimeException implements BaseRuntimeException, CalculatorException
 {
 }

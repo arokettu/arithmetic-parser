@@ -7,7 +7,7 @@ namespace Arokettu\ArithmeticParser\Exceptions;
 use Doctrine\Common\Lexer\Token;
 use UnexpectedValueException;
 
-final class ParseException extends UnexpectedValueException implements BaseException
+final class ParseException extends UnexpectedValueException implements BaseRuntimeException
 {
     public function __construct(
         string $message = "",

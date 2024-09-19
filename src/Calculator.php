@@ -14,6 +14,7 @@ final class Calculator
 
     /**
      * @throws Exceptions\CalcCallException
+     * @throws Exceptions\CalcConfigException
      */
     public function calc(float ...$vars): float
     {
@@ -28,7 +29,7 @@ final class Calculator
                     break;
                 case $operation instanceof Operation\Variable:
                     if (!isset($normalizedVars[$operation->normalizedName])) {
-                        throw new Exceptions\CalcCallException("Variable {$operation->name} is not defined");
+                        throw new Exceptions\UndefinedVariableException("Variable {$operation->name} is not defined");
                     }
                     $stack->push($normalizedVars[$operation->normalizedName]);
                     break;
@@ -42,12 +43,12 @@ final class Calculator
                     $this->performUnaryOperator($operation, $stack);
                     break;
                 default:
-                    throw new Exceptions\CalcCallException('Invalid operation: ' . get_debug_type($operation));
+                    throw new Exceptions\CalcConfigException('Invalid operation: ' . get_debug_type($operation));
             }
         }
 
         if (\count($stack) !== 1) {
-            throw new Exceptions\CalcCallException('Operation sequence is invalid');
+            throw new Exceptions\CalcConfigException('Operation sequence is invalid');
         }
 
         return $stack->pop();
@@ -56,7 +57,9 @@ final class Calculator
     private function performFunction(Operation\FunctionCall $operation, SplStack $stack): void
     {
         if ($operation->arity < 0) {
-            throw new Exceptions\CalcCallException("Invalid function arity, likely parser failure: {$operation->name}");
+            throw new Exceptions\BadFunctionCallException(
+                "Invalid function arity, likely parser failure: {$operation->name}"
+            );
         }
 
         try {
@@ -65,12 +68,12 @@ final class Calculator
                 $values[] = $stack->pop();
             }
         } catch (RuntimeException) {
-            throw new Exceptions\CalcCallException("Not enough arguments for function call: {$operation->name}");
+            throw new Exceptions\CalcConfigException("Not enough arguments for function call: {$operation->name}");
         }
 
         $func =
             $this->config->getFunctions()[$operation->normalizedName] ??
-            throw new Exceptions\CalcCallException("Undefined function: {$operation->name}");
+            throw new Exceptions\UndefinedFunctionException("Undefined function: {$operation->name}");
         $callValues = array_reverse(
             $func->lazy ?
             array_map(fn ($v) => new Argument\ValueArgument($v), $values) :
@@ -85,7 +88,9 @@ final class Calculator
             $value2 = $stack->pop();
             $value1 = $stack->pop();
         } catch (RuntimeException) {
-            throw new Exceptions\CalcCallException("Not enough arguments for binary operator: {$operation->operator}");
+            throw new Exceptions\CalcConfigException(
+                "Not enough arguments for binary operator: {$operation->operator}"
+            );
         }
 
         switch ($operation->operator) {
@@ -105,7 +110,7 @@ final class Calculator
                     }
                     break;
                 }
-                throw new Exceptions\CalcCallException("Undefined binary operator: {$operation->operator}");
+                throw new Exceptions\CalcConfigException("Undefined binary operator: {$operation->operator}");
         }
     }
 
@@ -114,7 +119,7 @@ final class Calculator
         try {
             $value = $stack->pop();
         } catch (RuntimeException) {
-            throw new Exceptions\CalcCallException("Not enough arguments for unary operator: {$operation->operator}");
+            throw new Exceptions\CalcConfigException("Not enough arguments for unary operator: {$operation->operator}");
         }
 
         switch ($operation->operator) {
@@ -134,7 +139,7 @@ final class Calculator
                     }
                     break;
                 }
-                throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");
+                throw new Exceptions\CalcConfigException("Undefined unary operator: {$operation->operator}");
         }
     }
 }

@@ -13,6 +13,7 @@ final class LazyCalculator
 
     /**
      * @throws Exceptions\CalcCallException
+     * @throws Exceptions\CalcConfigException
      */
     public function calc(float ...$vars): float
     {
@@ -38,12 +39,12 @@ final class LazyCalculator
                     $this->treeifyUnaryOperator($operation, $stack);
                     break;
                 default:
-                    throw new Exceptions\CalcCallException('Invalid operation: ' . get_debug_type($operation));
+                    throw new Exceptions\CalcConfigException('Invalid operation: ' . get_debug_type($operation));
             }
         }
 
         if (\count($stack) !== 1) {
-            throw new Exceptions\CalcCallException('Operation sequence is invalid');
+            throw new Exceptions\CalcConfigException('Operation sequence is invalid');
         }
 
         return $stack->pop()->getValue();
@@ -61,7 +62,7 @@ final class LazyCalculator
             public function getValue(): float
             {
                 if (!isset($this->normalizedVars[$this->var->normalizedName])) {
-                    throw new Exceptions\CalcCallException("Variable {$this->var->name} is not defined");
+                    throw new Exceptions\UndefinedVariableException("Variable {$this->var->name} is not defined");
                 }
 
                 return $this->normalizedVars[$this->var->normalizedName];
@@ -72,7 +73,9 @@ final class LazyCalculator
     private function treeifyFunction(Operation\FunctionCall $operation, SplStack $stack): void
     {
         if ($operation->arity < 0) {
-            throw new Exceptions\CalcCallException("Invalid function arity, likely parser failure: {$operation->name}");
+            throw new Exceptions\BadFunctionCallException(
+                "Invalid function arity, likely parser failure: {$operation->name}"
+            );
         }
 
         try {
@@ -81,7 +84,7 @@ final class LazyCalculator
                 $args[] = $stack->pop();
             }
         } catch (RuntimeException) {
-            throw new Exceptions\CalcCallException("Not enough arguments for function call: {$operation->name}");
+            throw new Exceptions\CalcConfigException("Not enough arguments for function call: {$operation->name}");
         }
 
         $stack->push(new class ($this->config, $operation, $args) implements Argument\LazyArgument {
@@ -96,7 +99,7 @@ final class LazyCalculator
             {
                 $func =
                     $this->config->getFunctions()[$this->operation->normalizedName] ??
-                    throw new Exceptions\CalcCallException("Undefined function: {$this->operation->name}");
+                    throw new Exceptions\UndefinedFunctionException("Undefined function: {$this->operation->name}");
                 $callValues = array_reverse($func->lazy ?
                     $this->args :
                     array_map(fn (Argument\LazyArgument $v) => $v->getValue(), $this->args));
@@ -111,7 +114,9 @@ final class LazyCalculator
             $value2 = $stack->pop();
             $value1 = $stack->pop();
         } catch (RuntimeException) {
-            throw new Exceptions\CalcCallException("Not enough arguments for binary operator: {$operation->operator}");
+            throw new Exceptions\CalcConfigException(
+                "Not enough arguments for binary operator: {$operation->operator}"
+            );
         }
 
         switch ($operation->operator) {
@@ -127,7 +132,7 @@ final class LazyCalculator
                     $stack->push(new Argument\BinaryOpArgument($operator->callable, $value1, $value2, $operator->lazy));
                     break;
                 }
-                throw new Exceptions\CalcCallException("Undefined binary operator: {$operation->operator}");
+                throw new Exceptions\CalcConfigException("Undefined binary operator: {$operation->operator}");
         }
     }
 
@@ -136,7 +141,7 @@ final class LazyCalculator
         try {
             $arg = $stack->pop();
         } catch (RuntimeException) {
-            throw new Exceptions\CalcCallException("Not enough arguments for unary operator: {$operation->operator}");
+            throw new Exceptions\CalcConfigException("Not enough arguments for unary operator: {$operation->operator}");
         }
 
         switch ($operation->operator) {
@@ -152,7 +157,7 @@ final class LazyCalculator
                     $stack->push(new Argument\UnaryOpArgument($operator->callable, $arg, $operator->lazy));
                     break;
                 }
-                throw new Exceptions\CalcCallException("Undefined unary operator: {$operation->operator}");
+                throw new Exceptions\CalcConfigException("Undefined unary operator: {$operation->operator}");
         }
     }
 }
