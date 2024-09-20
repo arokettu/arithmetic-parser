@@ -51,10 +51,10 @@ The most useful application of lazy calculator is partial execution::
 Error Handling
 --------------
 
-Since getValue() actually wraps calculation,
+Since ``getValue()`` actually wraps calculation,
 lazy functions and operators can also be used to detect errors in their subtrees.
 
-Let's create custom optional operator ``value?`` and custom default operator ``value ?? default``::
+Let's create a custom optional operator ``value?`` and a custom default operator ``value ?? default``::
 
     <?php
 
