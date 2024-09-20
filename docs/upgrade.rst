@@ -4,9 +4,47 @@ Upgrade Notes
 2.x to 3.0
 ==========
 
-* ``addFunctions()`` no longer accepts callables, use ``addFunctionsFromCallables()``
+* ``setFunctions()`` and ``addFunctions()`` no longer accept callables, use ``addFunctionsFromCallables()``
 
   * ``addFunctionsFromCallables()`` has ``$lazy`` parameter that may overshadow a function called ``lazy()`` if you defined one
+
+  .. code-block:: php
+
+        <?php
+
+        use Arokettu\ArithmeticParser\Config;
+
+        $config = Config::default();
+
+        // 2.x:
+
+        $config->addFunctions(
+            myfunc2: fn ($a) => $a ** 2,
+            myfunc3: fn ($a) => $a ** 3,
+        );
+
+        // 3.0:
+
+        $config->addFunctionsFromCallables(
+            myfunc2: fn ($a) => $a ** 2,
+            myfunc3: fn ($a) => $a ** 3,
+        );
+
+        // 2.x:
+
+        $config->setFunctions(
+            myfunc2: fn ($a) => $a ** 2,
+            myfunc3: fn ($a) => $a ** 3,
+        );
+
+        // 3.x:
+
+        $config->clearFunctions();
+        $config->addFunctionsFromCallables(
+            myfunc2: fn ($a) => $a ** 2,
+            myfunc3: fn ($a) => $a ** 3,
+        );
+
 * CalcCallException is no longer the only exception that Calculator throws:
 
     .. code-block:: php

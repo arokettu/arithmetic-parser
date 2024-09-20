@@ -23,6 +23,7 @@ RC1:
 Release:
 
 * `defined()` lazy function to check if a variable is defined
+* `setFunctions()` no longer accepts callables too
 * More granular exceptions for Calculator classes:
   * CalcCallException now has 2 subclasses: UndefinedVariableException and UndefinedFunctionException
   * CalcConfigException is thrown if calculator is misconfigured or duplicate variables are passed
