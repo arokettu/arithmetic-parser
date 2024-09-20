@@ -6,6 +6,8 @@
 
 *Sep 21, 2024*
 
+Branched from 2.1.1
+
 RC1:
 
 * LazyCalculator: allows lazy operators and lazy functions
