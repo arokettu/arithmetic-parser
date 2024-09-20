@@ -8,6 +8,8 @@ use Arokettu\ArithmeticParser\Argument\LazyArgument;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
 use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\Exceptions\CalcConfigException;
+use Arokettu\ArithmeticParser\Exceptions\UndefinedVariableException;
 use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Operation\BinaryOperator;
 use Arokettu\ArithmeticParser\Operation\Bracket;
@@ -27,7 +29,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new BinaryOperator('+'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Operation sequence is invalid');
         (new Calculator($operations))->calc();
     }
@@ -41,7 +43,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new BinaryOperator('+'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Operation sequence is invalid');
         (new LazyCalculator($operations))->calc();
     }
@@ -52,7 +54,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new Bracket(),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Invalid operation: Arokettu\ArithmeticParser\Operation\Bracket');
         (new Calculator($operations))->calc();
     }
@@ -63,7 +65,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new Bracket(),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Invalid operation: Arokettu\ArithmeticParser\Operation\Bracket');
         (new LazyCalculator($operations))->calc();
     }
@@ -75,7 +77,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new FunctionCall('test', -1),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Invalid function arity, likely parser failure: test');
         (new Calculator($operations))->calc();
     }
@@ -86,7 +88,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new FunctionCall('test', -1),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Invalid function arity, likely parser failure: test');
         (new LazyCalculator($operations))->calc();
     }
@@ -99,7 +101,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new BinaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Undefined binary operator: x');
         (new Calculator($operations))->calc();
     }
@@ -112,7 +114,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new BinaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Undefined binary operator: x');
         (new LazyCalculator($operations))->calc();
     }
@@ -124,7 +126,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new UnaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Undefined unary operator: x');
         (new Calculator($operations))->calc();
     }
@@ -136,7 +138,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new UnaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Undefined unary operator: x');
         (new LazyCalculator($operations))->calc();
     }
@@ -147,7 +149,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new UnaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Not enough arguments for unary operator: x');
         (new Calculator($operations))->calc();
     }
@@ -158,7 +160,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new UnaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Not enough arguments for unary operator: x');
         (new LazyCalculator($operations))->calc();
     }
@@ -169,7 +171,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new BinaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Not enough arguments for binary operator: x');
         (new Calculator($operations))->calc();
     }
@@ -180,7 +182,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new BinaryOperator('x'),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Not enough arguments for binary operator: x');
         (new LazyCalculator($operations))->calc();
     }
@@ -191,7 +193,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new FunctionCall('x', 1),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Not enough arguments for function call: x');
         (new Calculator($operations))->calc();
     }
@@ -202,7 +204,7 @@ class CalculatorEdgeCasesTest extends TestCase
             new FunctionCall('x', 1),
         ];
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Not enough arguments for function call: x');
         (new LazyCalculator($operations))->calc();
     }
@@ -221,7 +223,7 @@ class CalculatorEdgeCasesTest extends TestCase
 
     public function testLazyFuncNotActuallyLazy(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedVariableException::class);
         $this->expectExceptionMessage('Variable c is not defined');
 
         Calculator::evaluate('if (a, b, c)', a: 1, b: 2);
@@ -229,13 +231,14 @@ class CalculatorEdgeCasesTest extends TestCase
 
     public function testLazyUnaryOperatorHandled(): void
     {
+        // make an operator like x? === if(defined(x), x, 0)
         $config = Config::default();
         $config->addOperator(new Config\UnaryOperator(
             '?',
             function (LazyArgument $a) {
                 try {
                     return $a->getValue();
-                } catch (CalcCallException) {
+                } catch (UndefinedVariableException) {
                     return 0;
                 }
             },
@@ -264,7 +267,7 @@ class CalculatorEdgeCasesTest extends TestCase
             lazy: true,
         ));
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedVariableException::class);
         $this->expectExceptionMessage('Variable a is not defined');
 
         Calculator::evaluate('a?', $config);
@@ -310,7 +313,7 @@ class CalculatorEdgeCasesTest extends TestCase
             lazy: true,
         ));
 
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedVariableException::class);
         $this->expectExceptionMessage('Variable a is not defined');
 
         Calculator::evaluate('2 || a', $config);

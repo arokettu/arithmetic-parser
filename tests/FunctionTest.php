@@ -6,7 +6,7 @@ namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
-use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\Exceptions\UndefinedFunctionException;
 use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Operation\FunctionCall;
 use Arokettu\ArithmeticParser\Parser;
@@ -31,7 +31,7 @@ class FunctionTest extends TestCase
 
     public function testMissingFunc(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedFunctionException::class);
         $this->expectExceptionMessage('Undefined function: MyFunc');
 
         Calculator::evaluate('MyFunc(1) + 3');
@@ -39,7 +39,7 @@ class FunctionTest extends TestCase
 
     public function testMissingFuncLazy(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedFunctionException::class);
         $this->expectExceptionMessage('Undefined function: MyFunc');
 
         LazyCalculator::evaluate('MyFunc(1) + 3');
@@ -52,7 +52,7 @@ class FunctionTest extends TestCase
 
     public function testMissingFuncHiddenByLazyInNonLazyStillThrows(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedFunctionException::class);
         $this->expectExceptionMessage('Undefined function: MyFunc');
 
         Calculator::evaluate('1 or MyFunc(1) + 3');
@@ -80,7 +80,7 @@ class FunctionTest extends TestCase
         self::assertArrayHasKey('ABS', $config->getFunctions()); // normalized
 
         $config->removeFunction('abs');
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedFunctionException::class);
         $this->expectExceptionMessage('Undefined function: abs');
 
         Calculator::evaluate('abs(1 - 3)', $config);
@@ -89,7 +89,7 @@ class FunctionTest extends TestCase
     public function testConfigClearFunctions(): void
     {
         $config = Config::default()->clearFunctions();
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedFunctionException::class);
         $this->expectExceptionMessage('Undefined function: abs');
 
         Calculator::evaluate('abs(1 - 3)', $config);

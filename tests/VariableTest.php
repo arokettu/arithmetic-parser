@@ -6,7 +6,8 @@ namespace Arokettu\ArithmeticParser\Tests;
 
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;
-use Arokettu\ArithmeticParser\Exceptions\CalcCallException;
+use Arokettu\ArithmeticParser\Exceptions\CalcConfigException;
+use Arokettu\ArithmeticParser\Exceptions\UndefinedVariableException;
 use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +35,7 @@ class VariableTest extends TestCase
 
     public function testDuplicateVariable(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Duplicate variable name: MYVAR1');
         // var names are case-insensitive
         Calculator::evaluate('MyVar1 + 3', myVar1: 2, MYVAR1: 3);
@@ -42,7 +43,7 @@ class VariableTest extends TestCase
 
     public function testDuplicateVariableLazy(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Duplicate variable name: MYVAR1');
         // var names are case-insensitive
         LazyCalculator::evaluate('MyVar1 + 3', myVar1: 2, MYVAR1: 3);
@@ -50,7 +51,7 @@ class VariableTest extends TestCase
 
     public function testNoPositionalParams(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Invalid variable name: 0');
 
         Calculator::evaluate('2 + 3', Config::default(), 2, 3);
@@ -58,7 +59,7 @@ class VariableTest extends TestCase
 
     public function testNoPositionalParamsLazy(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(CalcConfigException::class);
         $this->expectExceptionMessage('Invalid variable name: 0');
 
         LazyCalculator::evaluate('2 + 3', Config::default(), 2, 3);
@@ -66,7 +67,7 @@ class VariableTest extends TestCase
 
     public function testMissingVar(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedVariableException::class);
         $this->expectExceptionMessage('Variable MyVar1 is not defined');
 
         Calculator::evaluate('MyVar1 + 3');
@@ -74,7 +75,7 @@ class VariableTest extends TestCase
 
     public function testMissingVarLazy(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedVariableException::class);
         $this->expectExceptionMessage('Variable MyVar1 is not defined');
 
         LazyCalculator::evaluate('MyVar1 + 3');
@@ -87,7 +88,7 @@ class VariableTest extends TestCase
 
     public function testMissingVarHiddenByLazyInNonLazyStillThrows(): void
     {
-        $this->expectException(CalcCallException::class);
+        $this->expectException(UndefinedVariableException::class);
         $this->expectExceptionMessage('Variable MyVar1 is not defined');
 
         Calculator::evaluate('true() or MyVar1 + 3');

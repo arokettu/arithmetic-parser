@@ -73,7 +73,7 @@ final class LazyCalculator
     private function treeifyFunction(Operation\FunctionCall $operation, SplStack $stack): void
     {
         if ($operation->arity < 0) {
-            throw new Exceptions\BadFunctionCallException(
+            throw new Exceptions\CalcConfigException(
                 "Invalid function arity, likely parser failure: {$operation->name}"
             );
         }
