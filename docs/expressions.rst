@@ -4,6 +4,8 @@ Expressions
 Supported Elements
 ==================
 
+.. note:: Operators and functions may support lazy calculation, see :ref:`lazy-calc`
+
 Supported expressions can include:
 
 * Unary operators ``+`` and ``-`` with any custom operators added.
@@ -11,9 +13,12 @@ Supported expressions can include:
   ``*``, ``/``,
   ``<``, ``>``, ``<=``, ``>=``,
   ``=`` (also ``==``), ``<>`` (also ``!=``),
-  ``and`` (also ``AND``), ``or`` (also ``OR``)
+  ``and`` (also ``AND``), ``or`` (also ``OR``),
+  ``not`` (also ``NOT``)
   with any custom operators added.
   All operators except for ``+`` and ``-`` can be disabled.
+
+  * ``and/AND``, ``or/OR`` operators are lazy
 * Numbers, obviously.
   All numbers are cast to float internally.
 * Functions.
