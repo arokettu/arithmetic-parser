@@ -6,6 +6,8 @@
 
 *upcoming*
 
+RC1:
+
 * LazyCalculator: allows lazy operators and lazy functions
   * Lazy binary and unary operators
   * Lazy functions
@@ -17,6 +19,14 @@
   * Functions returning special constants: `true()`, `false()`, `nan()`, `inf()`
 * Binary operator priorities moved to a separate class, `Arokettu\ArithmeticParser\Config\BinaryPriority`
   * `BinaryOperator::PRIORITY_*` constants are deprecated
+
+Release:
+
+* `defined()` lazy function to check if a variable is defined
+* More granular exceptions for Calculator classes:
+  * CalcCallException now has 2 subclasses: UndefinedVariableException and UndefinedFunctionException
+  * CalcConfigException is thrown if calculator is misconfigured or duplicate variables are passed
+  * CalculatorException interface to catch both CalcCallException and CalcConfigException
 
 ## 2.x
 
