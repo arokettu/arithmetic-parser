@@ -12,6 +12,8 @@ Config is mutable but it is cloned internally when passed to prevent external al
 
 The default preset used when no config is specified.
 
+.. _calc-config-funcs:
+
 Functions
 =========
 
@@ -19,6 +21,7 @@ Functions
 .. versionchanged:: 2.0 Functions can accept any number of arguments
 .. versionadded:: 2.0 ``pi()``, ``e()``, ``if()``
 .. versionchanged:: 2.0 ``log()`` now also has ``base`` optional param
+.. versionadded:: 3.0 ``defined()``, precision param for ``round()``
 
 The function must be a callable that accepts float arguments.
 
@@ -42,15 +45,18 @@ Default functions:
 `tanh <https://www.php.net/manual/en/function.tanh.php>`__,
 `ceil <https://www.php.net/manual/en/function.ceil.php>`__,
 `floor <https://www.php.net/manual/en/function.floor.php>`__,
-`round <https://www.php.net/manual/en/function.round.php>`__,
+`round(num, precision = 0) <https://www.php.net/manual/en/function.round.php>`__,
 `deg2rad <https://www.php.net/manual/en/function.deg2rad.php>`__,
 `rad2deg <https://www.php.net/manual/en/function.rad2deg.php>`__,
 `pi <https://www.php.net/manual/en/math.constants.php#constant.m-pi>`__,
-`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`__,
-if(if, then, else).
+`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`__.
+
+Lazy functions:
+    * ``if(if, then, else)``. Regular ``if`` expression
+    * ``defined(variable)``. Returns 1 if variable is defined and 0 if not
 
 .. note::
-    ``if()`` is a regular function and therefore is not lazy.
+    Lazy functions act like regular functions in the default calculator.
     For example, ``if (a = 0, 0, 1/a)`` will result in division by zero if ``a = 0``.
 
 You can:
@@ -58,11 +64,11 @@ You can:
 * Replace functions with your own list::
 
     <?php
-    $config->setFunctions(myfunc2: fn ($a) => a ** 2);
+    $config->setFunctions(myfunc2: fn ($a) => $a ** 2);
 * Add new functions::
 
     <?php
-    $config->addFunctions(myfunc3: fn ($a) => a ** 3);
+    $config->addFunctions(myfunc3: fn ($a) => $a ** 3);
 * Remove functions::
 
     <?php
@@ -75,6 +81,7 @@ Operators
 
 .. versionadded:: 1.1 removeOperator() and clearOperators()
 .. versionadded:: 2.0 ``<``, ``>``, ``<=``, ``>=``, ``=``, ``==``, ``<>``, ``!=``, ``and``, ``AND``, ``or``, ``OR``
+.. versionadded:: 3.0 ``not`` (also ``NOT``)
 
 Operators can be unary and binary.
 Operator symbol can be any string without digits.
@@ -86,7 +93,8 @@ Default operators:
 * ``*``, ``/``,
   ``<``, ``>``, ``<=``, ``>=``,
   ``=`` (also ``==``), ``<>`` (also ``!=``),
-  ``and`` (also ``AND``), ``or`` (also ``OR``).
+  ``and`` (also ``AND``), ``or`` (also ``OR``),
+  ``not`` (also ``NOT``).
 
 You can:
 

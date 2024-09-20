@@ -18,7 +18,7 @@ Supported expressions can include:
   with any custom operators added.
   All operators except for ``+`` and ``-`` can be disabled.
 
-  * ``and/AND``, ``or/OR`` operators are lazy
+  * ``and/AND``, ``or/OR`` operators are lazy, see :ref:`lazy-calc`.
 * Numbers, obviously.
   All numbers are cast to float internally.
 * Functions.
@@ -27,6 +27,7 @@ Supported expressions can include:
   Functions with and without prefix are equivalent.
   Functions accept a single parameter.
   Custom functions can be created with a Config object.
+  See :ref:`calc-config-funcs` for a full list.
 * Variables.
   Variable names are case insensitive alphanumeric strings that do not start with a number.
   They may have an optional ``$`` prefix.
