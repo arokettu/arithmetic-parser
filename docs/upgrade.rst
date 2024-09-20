@@ -47,7 +47,7 @@ Upgrade Notes
         myfunc3: fn ($a) => $a ** 3,
     );
 
-* ``CalcCallException``` is no longer the only exception that Calculator throws::
+* ``CalcCallException`` is no longer the only exception that Calculator throws::
 
     <?php
 
