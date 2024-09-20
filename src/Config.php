@@ -42,7 +42,7 @@ final class Config
                 // rounding
                 ceil: ceil(...),
                 floor: floor(...),
-                round: fn (float $num) => round($num),
+                round: fn (float $num, float $precision = 0) => round($num, \intval($precision)),
                 // conversion
                 deg2rad: deg2rad(...),
                 rad2deg: rad2deg(...),
