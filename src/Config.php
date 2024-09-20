@@ -186,7 +186,7 @@ final class Config
     /**
      * @return $this
      */
-    public function setFunctions(callable|Config\Func ...$functions): self
+    public function setFunctions(Config\Func ...$functions): self
     {
         $this->functions = [];
         return $this->addFunctions(...$functions);
