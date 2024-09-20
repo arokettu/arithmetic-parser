@@ -8,16 +8,15 @@ Supported Elements
 
 Supported expressions can include:
 
-* Unary operators ``+`` and ``-`` with any custom operators added.
+* Unary operators ``+``, ``-``, ``not`` (also ``NOT``) with any custom operators added.
 * Binary ``+``, ``-``,
   ``*``, ``/``,
   ``<``, ``>``, ``<=``, ``>=``,
   ``=`` (also ``==``), ``<>`` (also ``!=``),
-  ``and`` (also ``AND``), ``or`` (also ``OR``),
-  ``not`` (also ``NOT``)
+  ``and`` (also ``AND``), ``or`` (also ``OR``)
   with any custom operators added.
-  All operators except for ``+`` and ``-`` can be disabled.
 
+  * All unary and binary operators except for ``+`` and ``-`` can be disabled.
   * ``and/AND``, ``or/OR`` operators are lazy, see :ref:`lazy-calc`.
 * Numbers, obviously.
   All numbers are cast to float internally.
