@@ -24,6 +24,7 @@ Documentation
    calculator
    parser
    validator
+   advanced
    upgrade
 
 License
