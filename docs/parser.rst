@@ -1,6 +1,8 @@
 Parser
 ######
 
+.. highlight:: php
+
 ``Arokettu\ArithmeticParser\Parser`` class is used to parse an arithmetic expression
 to the `Reverse Polish notation`_ by the `shunting yard algorithm`_.
 
@@ -13,9 +15,7 @@ Parser API is not considered stable.
 ===========
 
 ``parse`` method returns an array of operation objects for RPN stack machine.
-Example:
-
-.. code-block:: php
+Example::
 
     <?php
 
