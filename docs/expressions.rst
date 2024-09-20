@@ -37,4 +37,4 @@ Supported expressions can include:
 Example
 =======
 
-``'sin(x) * (coef1 + coef2)'``
+``sin(x) * (coef1 + coef2)``

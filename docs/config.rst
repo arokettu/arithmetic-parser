@@ -22,6 +22,9 @@ Functions
 .. versionadded:: 2.0 ``pi()``, ``e()``, ``if()``
 .. versionchanged:: 2.0 ``log()`` now also has ``base`` optional param
 .. versionadded:: 3.0 ``defined()``, precision param for ``round()``
+.. versionchanged::
+    3.0 ``setFunctions()`` and ``addFunctions()`` no longer accept callables,
+    ``addFunctionsFromCallables()`` was added to handle them
 
 The function must be a callable that accepts float arguments.
 
@@ -49,9 +52,13 @@ Default functions:
 `deg2rad <https://www.php.net/manual/en/function.deg2rad.php>`__,
 `rad2deg <https://www.php.net/manual/en/function.rad2deg.php>`__,
 `pi <https://www.php.net/manual/en/math.constants.php#constant.m-pi>`__,
-`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`__.
+`e <https://www.php.net/manual/en/math.constants.php#constant.m-e>`__,
+`true <https://www.php.net/manual/en/language.types.boolean.php>`__,
+`false <https://www.php.net/manual/en/language.types.boolean.php>`__,
+`nan <https://www.php.net/manual/en/math.constants.php#constant.nan>`__,
+`inf <https://www.php.net/manual/en/math.constants.php#constant.inf>`__.
 
-Lazy functions:
+Default lazy functions:
     * ``if(if, then, else)``. Regular ``if`` expression
     * ``defined(variable)``. Returns 1 if variable is defined and 0 if not
 
@@ -64,17 +71,54 @@ You can:
 * Replace functions with your own list::
 
     <?php
-    $config->setFunctions(myfunc2: fn ($a) => $a ** 2);
+    $config->setFunctions(
+        new Config\Func('myfunc2', fn (float $a) => $a ** 2)
+    )
 * Add new functions::
 
     <?php
-    $config->addFunctions(myfunc3: fn ($a) => $a ** 3);
+    // by object
+    $config->setFunctions(
+        new Config\Func('myfunc3', fn (float $a) => $a ** 3)
+    )
+    // or by callable
+    $config->addFunctionsFromCallables(myfunc4: fn (float $a) => $a ** 4);
 * Remove functions::
 
     <?php
     $config->removeFunctions('acos', 'asin');
     $config->removeFunction('acos'); // semantic alias for removeFunctions('acos')
     $config->clearFunctions(); // remove all functions
+
+Callable must accept all floats for a regular function or all instances of ``LazyArgument`` for a lazy function.
+Lazy functions can be used with the default calculator, but they will act like regular functions in that case.
+
+For example, function that returns its first nonzero argument::
+
+    <?php
+
+    declare(strict_types=1);
+
+    use Arokettu\ArithmeticParser\Argument\LazyArgument;
+    use Arokettu\ArithmeticParser\Config;
+    use Arokettu\ArithmeticParser\LazyCalculator;
+
+    $config = Config::default();
+
+    $config->addFunctionFromCallable('first_nonzero', function (LazyArgument ...$args) {
+        foreach ($args as $a) {
+            $value = $a->getValue();
+            if ($value !== 0.0) {
+                return $value;
+            }
+        }
+        return 0;
+    }, true);
+
+    var_dump(LazyCalculator::evaluate(
+        'first_nonzero(a, b, c, notafunc(d) / 0)', $config,
+        a: 0, b: 0, c: 3
+    )); // 3
 
 Operators
 =========
@@ -96,14 +140,16 @@ Default operators:
   ``and`` (also ``AND``), ``or`` (also ``OR``),
   ``not`` (also ``NOT``).
 
+.. note:: ``and/AND`` and ``or/OR``) are lazy like in most programming languages
+
 You can:
 
 * Replace operators with your own list::
 
     <?php
     $config->setOperators(
-        new BinaryOperator('×', fn ($a, $b) => $a * $b, BinaryOperator::PRIORITY_MUL),
-        new BinaryOperator('÷', fn ($a, $b) => $a / $b, BinaryOperator::PRIORITY_MUL),
+        new BinaryOperator('×', fn (float $a, float $b) => $a * $b, BinaryOperator::PRIORITY_MUL),
+        new BinaryOperator('÷', fn (float $a, float $b) => $a / $b, BinaryOperator::PRIORITY_MUL),
     );
 
 * Add new operators::
@@ -124,3 +170,30 @@ You can:
     $config->removeOperator('/'); // semantic alias for removeOperators('/')
     // leave only + and -
     $config->clearOperators(); // + and - are handled specially and can't be removed
+
+Like functions, operators can be lazy, in that case callables must accept instances of ``LazyArgument`` as arguments.
+
+For example, OR operator that returns the actual value of the first truth-y argument::
+
+    <?php
+
+    declare(strict_types=1);
+
+    use Arokettu\ArithmeticParser\Argument\LazyArgument;
+    use Arokettu\ArithmeticParser\Config;
+    use Arokettu\ArithmeticParser\Config\BinaryPriority;
+    use Arokettu\ArithmeticParser\LazyCalculator;
+
+    $config = Config::default();
+
+    $config->addOperator(new Config\BinaryOperator(
+        '||',
+        fn (LazyArgument $a, LazyArgument $b)
+            => $a->getValue() ?: $b->getValue(),
+        BinaryPriority::OR,
+        Config\BinaryAssoc::LEFT,
+        true,
+    ));
+
+    var_dump(LazyCalculator::evaluate('a || b', $config, a: 0, b: 12)); // 12
+    var_dump(LazyCalculator::evaluate('a || b / 0', $config, a: 123)); // 123

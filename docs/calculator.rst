@@ -3,7 +3,7 @@ Calculator
 
 ``Arokettu\ArithmeticParser\Calculator`` class is used to interpret the arithmetic expression.
 
-``Arokettu\ArithmeticParser\LazyCalculator`` class also supports lazy expressions.
+``Arokettu\ArithmeticParser\LazyCalculator`` class also supports lazy expressions, see :ref:`lazy-calc`.
 
 ``Calculator::parse()`` / ``LazyCalculator::parse()``
 =====================================================
