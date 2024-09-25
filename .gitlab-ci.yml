@@ -64,7 +64,6 @@ coverage:
   script:
     - composer update
     - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover reports/coverage.xml --log-junit reports/junit.xml
-    - bash <(curl -s https://codecov.io/bash)
 
 coverage-upload:
   stage: report-upload
