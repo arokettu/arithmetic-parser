@@ -62,7 +62,7 @@ Default lazy functions:
     * ``if(if, then, else)``. Regular ``if`` expression
     * ``defined(variable)``. Returns 1 if variable is defined and 0 if not
 
-.. note::
+.. warning::
     Lazy functions act like regular functions in the default calculator.
     For example, ``if (a = 0, 0, 1/a)`` will result in division by zero if ``a = 0``.
 
