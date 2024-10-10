@@ -21,7 +21,7 @@ Functions
 .. versionchanged:: 2.0 Functions can accept any number of arguments
 .. versionadded:: 2.0 ``pi()``, ``e()``, ``if()``
 .. versionchanged:: 2.0 ``log()`` now also has ``base`` optional param
-.. versionadded:: 3.0 ``defined()``, precision param for ``round()``
+.. versionadded:: 3.0 ``defined()``, precision param for ``round()``, ``true()``, ``false()``, ``nan()``, ``inf()``
 .. versionchanged::
     3.0 ``setFunctions()`` and ``addFunctions()`` no longer accept callables,
     ``addFunctionsFromCallables()`` was added to handle them
