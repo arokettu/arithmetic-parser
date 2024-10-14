@@ -114,7 +114,7 @@ Dynamic Functions
 =================
 
 .. warning::
-    Calling parser and calculator with a different config objects is not supported
+    Calling parser and calculator with different config objects is not supported
     unless only functions were added.
 
 Since, unlike operators, functions are not resolved by the parser,

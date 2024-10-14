@@ -8,7 +8,7 @@ Configuration
 Config is mutable but it is cloned internally when passed to prevent external alterations.
 
 .. warning::
-    Calling parser and calculator with a different config objects is not supported
+    Calling parser and calculator with different config objects is not supported
     unless only functions were added.
 
 ``Config::default()``
