@@ -19,13 +19,17 @@ trait BaseCalculator
     private readonly Config $config;
 
     /**
-     * @param iterable<int, Operation\Operation> $operations
+     * @param iterable<int, Operation\Operation>|Parser\Parsed $operations
      * @param Config|null $config
      */
     public function __construct(
-        iterable $operations = [],
+        iterable|Parser\Parsed $operations = [],
         Config|null $config = null,
     ) {
+        if ($operations instanceof Parser\Parsed) {
+            $operations = $operations->operations;
+        }
+
         $this->setOperations(...$operations);
         $this->config = $config ? clone $config : Config::default();
     }
@@ -41,7 +45,7 @@ trait BaseCalculator
      */
     public static function parse(string $input, Config|null $config = null): static
     {
-        return new static((new Parser($config))->parse($input)->operations, $config);
+        return new static((new Parser($config))->parse($input), $config);
     }
 
     /**
