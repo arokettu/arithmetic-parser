@@ -113,6 +113,10 @@ Let's create a custom optional operator ``value?`` and a custom default operator
 Dynamic Functions
 =================
 
+.. warning::
+    Calling parser and calculator with a different config objects is not supported
+    unless only functions were added.
+
 Since, unlike operators, functions are not resolved by the parser,
 you can dynamically add missing functions before the actual calculation::
 
@@ -147,5 +151,3 @@ you can dynamically add missing functions before the actual calculation::
     }
 
     var_dump((new Calculator($parsed->operations, $config))->calc()); // 14
-
-.. note:: It is strictly recommended not to change anything in the config except adding missing functions.
