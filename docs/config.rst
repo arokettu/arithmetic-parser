@@ -21,10 +21,6 @@ The default preset used when no config is specified.
 Functions
 =========
 
-.. versionadded:: 1.1 removeFunction() and clearFunctions()
-.. versionchanged:: 2.0 Functions can accept any number of arguments
-.. versionadded:: 2.0 ``pi()``, ``e()``, ``if()``
-.. versionchanged:: 2.0 ``log()`` now also has ``base`` optional param
 .. versionadded:: 3.0 ``defined()``, ``true()``, ``false()``, ``nan()``, ``inf()``, precision param for ``round()``
 .. versionchanged::
     3.0 ``setFunctions()`` and ``addFunctions()`` no longer accept callables,
@@ -127,8 +123,6 @@ For example, function that returns its first nonzero argument::
 Operators
 =========
 
-.. versionadded:: 1.1 removeOperator() and clearOperators()
-.. versionadded:: 2.0 ``<``, ``>``, ``<=``, ``>=``, ``=``, ``==``, ``<>``, ``!=``, ``and``, ``AND``, ``or``, ``OR``
 .. versionadded:: 3.0 ``not`` (also ``NOT``)
 
 Operators can be unary and binary.
