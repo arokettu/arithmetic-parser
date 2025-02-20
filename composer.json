@@ -42,6 +42,6 @@
         "psy/psysh": "*",
         "sandfox.dev/code-standard": "^1.2024.07.05",
         "squizlabs/php_codesniffer": "*",
-        "vimeo/psalm": "^5.25"
+        "vimeo/psalm": "^5.25 | ^6"
     }
 }
