@@ -21,6 +21,7 @@ The default preset used when no config is specified.
 Functions
 =========
 
+.. versionadded:: 3.0 Lazy functions, see :ref:`lazy-calc`
 .. versionadded:: 3.0 ``defined()``, ``true()``, ``false()``, ``nan()``, ``inf()``, precision param for ``round()``
 .. versionchanged::
     3.0 ``setFunctions()`` and ``addFunctions()`` no longer accept callables,
@@ -124,6 +125,7 @@ Operators
 =========
 
 .. versionadded:: 3.0 ``not`` (also ``NOT``)
+.. versionadded:: 3.0 Lazy operators, see :ref:`lazy-calc`
 
 Operators can be unary and binary.
 Operator symbol can be any string without digits.

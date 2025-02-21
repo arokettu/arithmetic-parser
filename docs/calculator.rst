@@ -1,6 +1,8 @@
 Calculator
 ##########
 
+.. versionadded:: 3.0 LazyCalculator
+
 ``Arokettu\ArithmeticParser\Calculator`` class is used to interpret the arithmetic expression.
 
 ``Arokettu\ArithmeticParser\LazyCalculator`` class also supports lazy expressions, see :ref:`lazy-calc`.

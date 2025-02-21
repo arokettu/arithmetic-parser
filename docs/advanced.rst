@@ -8,6 +8,8 @@ Advanced Use Cases
 Lazy Calculations
 =================
 
+.. versionadded:: 3.0
+
 Calculator vs LazyCalculator
 ----------------------------
 
