@@ -1,10 +1,22 @@
 # Arithmetic Parser for PHP
 
-[![Packagist](https://img.shields.io/packagist/v/arokettu/arithmetic-parser.svg?style=flat-square)](https://packagist.org/packages/arokettu/arithmetic-parser)
-[![PHP](https://img.shields.io/packagist/php-v/arokettu/arithmetic-parser.svg?style=flat-square)](https://packagist.org/packages/arokettu/arithmetic-parser)
-[![Packagist](https://img.shields.io/github/license/arokettu/arithmetic-parser.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline/sandfox/arithmetic-parser/master.svg?style=flat-square)](https://gitlab.com/sandfox/arithmetic-parser/-/pipelines)
-[![Codecov](https://img.shields.io/codecov/c/gl/sandfox/arithmetic-parser?style=flat-square)](https://codecov.io/gl/sandfox/arithmetic-parser/)
+[![Packagist]][Packagist Link]
+[![PHP]][PHP Link]
+[![License]][License Link]
+[![Gitlab CI]][Gitlab CI Link]
+[![Codecov]][Codecov Link]
+
+[Packagist]: https://img.shields.io/packagist/v/arokettu/arithmetic-parser.svg?style=flat-square
+[PHP]: https://img.shields.io/packagist/php-v/arokettu/arithmetic-parser.svg?style=flat-square
+[License]: https://img.shields.io/github/license/arokettu/arithmetic-parser.svg?style=flat-square
+[Gitlab CI]: https://img.shields.io/gitlab/pipeline/sandfox/arithmetic-parser/master.svg?style=flat-square
+[Codecov]: https://img.shields.io/codecov/c/gl/sandfox/arithmetic-parser?style=flat-square
+
+[Packagist Link]: https://packagist.org/packages/arokettu/arithmetic-parser
+[PHP Link]: https://packagist.org/packages/arokettu/arithmetic-parser
+[License Link]: LICENSE.md
+[Gitlab CI Link]: https://gitlab.com/sandfox/arithmetic-parser/-/pipelines
+[Codecov Link]: https://codecov.io/gl/sandfox/arithmetic-parser/
 
 A library that can parse and interpret arithmetic expressions.
 It's aimed to be configurable and safe to process end user's input. 
@@ -37,6 +49,4 @@ Feel free to ask any questions in our room on Gitter: <https://gitter.im/arokett
 
 ## License
 
-The library is available as open source under the terms of the [MIT License].
-
-[MIT License]:  https://opensource.org/licenses/MIT
+The library is available as open source under the terms of the [MIT License][License Link].
