@@ -1,7 +1,7 @@
 # Arithmetic Parser for PHP
 
 [![Packagist]][Packagist Link]
-[![PHP]][PHP Link]
+[![PHP]][Packagist Link]
 [![License]][License Link]
 [![Gitlab CI]][Gitlab CI Link]
 [![Codecov]][Codecov Link]
@@ -13,7 +13,6 @@
 [Codecov]: https://img.shields.io/codecov/c/gl/sandfox/arithmetic-parser?style=flat-square
 
 [Packagist Link]: https://packagist.org/packages/arokettu/arithmetic-parser
-[PHP Link]: https://packagist.org/packages/arokettu/arithmetic-parser
 [License Link]: LICENSE.md
 [Gitlab CI Link]: https://gitlab.com/sandfox/arithmetic-parser/-/pipelines
 [Codecov Link]: https://codecov.io/gl/sandfox/arithmetic-parser/
