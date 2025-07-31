@@ -1,7 +1,7 @@
 Arithmetic Parser
 #################
 
-|Packagist| |GitLab| |GitHub| |Bitbucket| |Gitea|
+|Packagist| |GitLab| |GitHub| |Codeberg| |Gitea|
 
 A PHP library that can parse and interpret arithmetic expressions.
 It's aimed to be configurable and safe to process end user's input.
@@ -40,7 +40,7 @@ The library is available as open source under the terms of the `MIT License`_.
    :target:     https://github.com/arokettu/arithmetic-parser
 .. |GitLab|     image:: https://img.shields.io/badge/get%20on-GitLab-informational.svg?style=flat-square&logo=gitlab
    :target:     https://gitlab.com/sandfox/arithmetic-parser
-.. |Bitbucket|  image:: https://img.shields.io/badge/get%20on-Bitbucket-informational.svg?style=flat-square&logo=bitbucket
-   :target:     https://bitbucket.org/sandfox/arithmetic-parser
+.. |Codeberg|   image:: https://img.shields.io/badge/get%20on-Codeberg-informational.svg?style=flat-square&logo=codeberg
+   :target:     https://codeberg.org/sandfox/arithmetic-parser
 .. |Gitea|      image:: https://img.shields.io/badge/get%20on-Gitea-informational.svg?style=flat-square&logo=gitea
    :target:     https://sandfox.org/sandfox/arithmetic-parser
