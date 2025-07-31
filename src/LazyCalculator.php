@@ -74,7 +74,7 @@ final class LazyCalculator
     {
         if ($operation->arity < 0) {
             throw new Exceptions\CalcConfigException(
-                "Invalid function arity, likely parser failure: {$operation->name}"
+                "Invalid function arity, likely parser failure: {$operation->name}",
             );
         }
 
@@ -102,7 +102,7 @@ final class LazyCalculator
                     throw new Exceptions\UndefinedFunctionException("Undefined function: {$this->operation->name}");
                 $callValues = array_reverse($func->lazy ?
                     $this->args :
-                    array_map(fn (Argument\LazyArgument $v) => $v->getValue(), $this->args));
+                    array_map(static fn (Argument\LazyArgument $v) => $v->getValue(), $this->args));
                 return ($func->callable)(...$callValues);
             }
         });
@@ -115,16 +115,16 @@ final class LazyCalculator
             $value1 = $stack->pop();
         } catch (RuntimeException) {
             throw new Exceptions\CalcConfigException(
-                "Not enough arguments for binary operator: {$operation->operator}"
+                "Not enough arguments for binary operator: {$operation->operator}",
             );
         }
 
         switch ($operation->operator) {
             case '+':
-                $stack->push(new Argument\BinaryOpArgument(fn ($a, $b) => $a + $b, $value1, $value2, false));
+                $stack->push(new Argument\BinaryOpArgument(static fn ($a, $b) => $a + $b, $value1, $value2, false));
                 break;
             case '-':
-                $stack->push(new Argument\BinaryOpArgument(fn ($a, $b) => $a - $b, $value1, $value2, false));
+                $stack->push(new Argument\BinaryOpArgument(static fn ($a, $b) => $a - $b, $value1, $value2, false));
                 break;
             default:
                 $operator = $this->config->getOperators()[$operation->operator] ?? null;
@@ -149,7 +149,7 @@ final class LazyCalculator
                 $stack->push($arg); // noop
                 break;
             case '-':
-                $stack->push(new Argument\UnaryOpArgument(fn ($v) => -$v, $arg, false));
+                $stack->push(new Argument\UnaryOpArgument(static fn ($v) => -$v, $arg, false));
                 break;
             default:
                 $operator = $this->config->getOperators()[$operation->operator] ?? null;

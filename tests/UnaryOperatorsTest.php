@@ -11,13 +11,13 @@ use Arokettu\ArithmeticParser\Config\UnaryPos;
 use Arokettu\ArithmeticParser\LazyCalculator;
 use PHPUnit\Framework\TestCase;
 
-class UnaryOperatorsTest extends TestCase
+final class UnaryOperatorsTest extends TestCase
 {
     public function testPrefixOrder(): void
     {
         $config = Config::default()->addOperators(
-            new UnaryOperator('¿', fn ($a) => $a * 3, UnaryPos::PREFIX),
-            new UnaryOperator('¡', fn ($a) => $a + 5, UnaryPos::PREFIX),
+            new UnaryOperator('¿', static fn ($a) => $a * 3, UnaryPos::PREFIX),
+            new UnaryOperator('¡', static fn ($a) => $a + 5, UnaryPos::PREFIX),
         );
 
         // right to left
@@ -35,8 +35,8 @@ class UnaryOperatorsTest extends TestCase
     public function testPostfixOrder(): void
     {
         $config = Config::default()->addOperators(
-            new UnaryOperator('?', fn ($a) => $a * 3, UnaryPos::POSTFIX),
-            new UnaryOperator('!', fn ($a) => $a + 5, UnaryPos::POSTFIX),
+            new UnaryOperator('?', static fn ($a) => $a * 3, UnaryPos::POSTFIX),
+            new UnaryOperator('!', static fn ($a) => $a + 5, UnaryPos::POSTFIX),
         );
 
         // right to left
@@ -54,8 +54,8 @@ class UnaryOperatorsTest extends TestCase
     public function testMixedOrder(): void
     {
         $config = Config::default()->addOperators(
-            new UnaryOperator('?', fn ($a) => $a * 3, UnaryPos::POSTFIX),
-            new UnaryOperator('¿', fn ($a) => $a + 5, UnaryPos::PREFIX),
+            new UnaryOperator('?', static fn ($a) => $a * 3, UnaryPos::POSTFIX),
+            new UnaryOperator('¿', static fn ($a) => $a + 5, UnaryPos::PREFIX),
         );
 
         // postfix first

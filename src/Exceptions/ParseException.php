@@ -10,7 +10,7 @@ use UnexpectedValueException;
 final class ParseException extends UnexpectedValueException implements BaseRuntimeException
 {
     public function __construct(
-        string $message = "",
+        string $message = '',
         int $code = 0,
         \Throwable|null $previous = null,
         public readonly int $position = 0,

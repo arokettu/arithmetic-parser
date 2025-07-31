@@ -12,7 +12,7 @@ use Arokettu\ArithmeticParser\LazyCalculator;
 use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
 
-class VariableTest extends TestCase
+final class VariableTest extends TestCase
 {
     public function testVariable(): void
     {

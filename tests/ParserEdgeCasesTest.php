@@ -11,7 +11,7 @@ use Arokettu\ArithmeticParser\Exceptions\ParseException;
 use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
 
-class ParserEdgeCasesTest extends TestCase
+final class ParserEdgeCasesTest extends TestCase
 {
     public function testEmptyBrackets(): void
     {
@@ -91,7 +91,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Unary postfix operator (~) missing its argument at position 0');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::POSTFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::POSTFIX),
         );
 
         (new Parser($config))->parse('~5');
@@ -103,7 +103,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Missing operator at position 1');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('5~');
@@ -115,7 +115,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Missing operator at position 6');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('(1 * 5~)');
@@ -127,7 +127,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Binary operator (+) missing second argument at position 1');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('5+');
@@ -139,7 +139,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Binary operator (+) missing second argument at position 6');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('(1 * 5+)');
@@ -151,7 +151,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Unary prefix operator (+) missing its argument at position 5');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('5 / (+)')->asString();
@@ -163,7 +163,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Binary operator (+) missing second argument at position 5');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('abc(5+, 1)');
@@ -175,7 +175,7 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Unary prefix operator (+) missing its argument at position 4');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('~', fn ($a) => $a, UnaryPos::PREFIX),
+            new UnaryOperator('~', static fn ($a) => $a, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('abc(+, 5)')->asString();
@@ -219,8 +219,8 @@ class ParserEdgeCasesTest extends TestCase
         $this->expectExceptionMessage('Missing operator at position 5');
 
         $config = Config::default()->addOperators(
-            new UnaryOperator('?', fn ($a) => $a * 2, UnaryPos::POSTFIX),
-            new UnaryOperator('¿', fn ($a) => $a + 2, UnaryPos::PREFIX),
+            new UnaryOperator('?', static fn ($a) => $a * 2, UnaryPos::POSTFIX),
+            new UnaryOperator('¿', static fn ($a) => $a + 2, UnaryPos::PREFIX),
         );
 
         (new Parser($config))->parse('¿2? ¿3?');

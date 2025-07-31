@@ -13,7 +13,7 @@ use Arokettu\ArithmeticParser\Parser;
 use DomainException;
 use PHPUnit\Framework\TestCase;
 
-class FunctionTest extends TestCase
+final class FunctionTest extends TestCase
 {
     public function testFunction(): void
     {
@@ -61,7 +61,7 @@ class FunctionTest extends TestCase
     public function testConfigCustomFunctionByCallable(): void
     {
         $config = Config::default()->addFunctionsFromCallables(
-            mul2: fn ($a) => $a * 2,
+            mul2: static fn ($a) => $a * 2,
         );
         self::assertEquals(4, Calculator::evaluate('mul2(2)', $config));
     }
@@ -69,7 +69,7 @@ class FunctionTest extends TestCase
     public function testConfigAddFunctionByObject(): void
     {
         $config = Config::default()->addFunctions(
-            new Config\Func('mul2', fn ($a) => $a * 2),
+            new Config\Func('mul2', static fn ($a) => $a * 2),
         );
         self::assertEquals(4, Calculator::evaluate('mul2(2)', $config));
     }
@@ -102,7 +102,7 @@ class FunctionTest extends TestCase
 
         $config = Config::default();
         $func = [
-            '1abc' => fn () => null,
+            '1abc' => static fn () => null,
         ];
         $config->addFunctionsFromCallables(...$func);
     }
@@ -120,7 +120,7 @@ class FunctionTest extends TestCase
     public function testCorrectArity(): void
     {
         $parsed = (new Parser(Config::default()))->parse(
-            'a(1,2,3) + @a(1,2) + A(1,2,3,4) + b() / b(1) + c + c(123)'
+            'a(1,2,3) + @a(1,2) + A(1,2,3,4) + b() / b(1) + c + c(123)',
         );
 
         $funcs = [

@@ -18,7 +18,7 @@ use Arokettu\ArithmeticParser\Operation\Number;
 use Arokettu\ArithmeticParser\Operation\UnaryOperator;
 use PHPUnit\Framework\TestCase;
 
-class CalculatorEdgeCasesTest extends TestCase
+final class CalculatorEdgeCasesTest extends TestCase
 {
     public function testWrongLength(): void
     {
@@ -235,7 +235,7 @@ class CalculatorEdgeCasesTest extends TestCase
         $config = Config::default();
         $config->addOperator(new Config\UnaryOperator(
             '?',
-            function (LazyArgument $a) {
+            static function (LazyArgument $a) {
                 try {
                     return $a->getValue();
                 } catch (UndefinedVariableException) {
@@ -257,7 +257,7 @@ class CalculatorEdgeCasesTest extends TestCase
         $config = Config::default();
         $config->addOperator(new Config\UnaryOperator(
             '?',
-            function (LazyArgument $a) {
+            static function (LazyArgument $a) {
                 try {
                     return $a->getValue();
                 } catch (CalcCallException) {
@@ -278,7 +278,7 @@ class CalculatorEdgeCasesTest extends TestCase
         $config = Config::default();
         $config->addOperator(new Config\BinaryOperator(
             '||',
-            function (LazyArgument $a, LazyArgument $b) {
+            static function (LazyArgument $a, LazyArgument $b) {
                 if (($v = $a->getValue())) {
                     return $v;
                 }
@@ -303,7 +303,7 @@ class CalculatorEdgeCasesTest extends TestCase
         $config = Config::default();
         $config->addOperator(new Config\BinaryOperator(
             '||',
-            function (LazyArgument $a, LazyArgument $b) {
+            static function (LazyArgument $a, LazyArgument $b) {
                 if (($v = $a->getValue())) {
                     return $v;
                 }

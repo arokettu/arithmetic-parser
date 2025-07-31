@@ -58,7 +58,7 @@ final class Calculator
     {
         if ($operation->arity < 0) {
             throw new Exceptions\CalcConfigException(
-                "Invalid function arity, likely parser failure: {$operation->name}"
+                "Invalid function arity, likely parser failure: {$operation->name}",
             );
         }
 
@@ -76,8 +76,8 @@ final class Calculator
             throw new Exceptions\UndefinedFunctionException("Undefined function: {$operation->name}");
         $callValues = array_reverse(
             $func->lazy ?
-            array_map(fn ($v) => new Argument\ValueArgument($v), $values) :
-            $values
+            array_map(static fn ($v) => new Argument\ValueArgument($v), $values) :
+            $values,
         );
         $stack->push(($func->callable)(...$callValues));
     }
@@ -89,7 +89,7 @@ final class Calculator
             $value1 = $stack->pop();
         } catch (RuntimeException) {
             throw new Exceptions\CalcConfigException(
-                "Not enough arguments for binary operator: {$operation->operator}"
+                "Not enough arguments for binary operator: {$operation->operator}",
             );
         }
 

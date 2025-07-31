@@ -10,7 +10,7 @@ use Arokettu\ArithmeticParser\Exceptions\ParseException;
 use Arokettu\ArithmeticParser\LazyCalculator;
 use PHPUnit\Framework\TestCase;
 
-class BinaryOperatorsTest extends TestCase
+final class BinaryOperatorsTest extends TestCase
 {
     public function testOperators(): void
     {
@@ -49,7 +49,7 @@ class BinaryOperatorsTest extends TestCase
     public function testLeftAssociative(): void
     {
         $config = Config::default()->addOperator(
-            new Config\BinaryOperator('^', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::LEFT)
+            new Config\BinaryOperator('^', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::LEFT),
         );
 
         $calc = Calculator::evaluate('2 ^ 3 ^ 4', $config);
@@ -62,7 +62,7 @@ class BinaryOperatorsTest extends TestCase
     public function testRightAssociative(): void
     {
         $config = Config::default()->addOperator(
-            new Config\BinaryOperator('^', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::RIGHT)
+            new Config\BinaryOperator('^', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::RIGHT),
         );
 
         $calc = Calculator::evaluate('2 ^ 3 ^ 4', $config);
@@ -75,7 +75,7 @@ class BinaryOperatorsTest extends TestCase
     public function testMulticharOperators(): void
     {
         $config = Config::default()->addOperator(
-            new Config\BinaryOperator('**', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::RIGHT)
+            new Config\BinaryOperator('**', pow(...), Config\BinaryPriority::POW, Config\BinaryAssoc::RIGHT),
         );
 
         // ** should take precedence over *
@@ -89,8 +89,8 @@ class BinaryOperatorsTest extends TestCase
     public function testAlphaOperators(): void
     {
         $config = Config::default()->setOperators(
-            new Config\BinaryOperator('add', fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD),
-            new Config\BinaryOperator('mul', fn ($a, $b) => $a * $b, Config\BinaryPriority::MUL),
+            new Config\BinaryOperator('add', static fn ($a, $b) => $a + $b, Config\BinaryPriority::ADD),
+            new Config\BinaryOperator('mul', static fn ($a, $b) => $a * $b, Config\BinaryPriority::MUL),
         );
 
         // ** should take precedence over *

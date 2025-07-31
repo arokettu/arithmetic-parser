@@ -9,7 +9,7 @@ use Arokettu\ArithmeticParser\Exceptions\UndefinedVariableException;
 use Arokettu\ArithmeticParser\LazyCalculator;
 use PHPUnit\Framework\TestCase;
 
-class DefaultFunctionsTest extends TestCase
+final class DefaultFunctionsTest extends TestCase
 {
     public function testDefined(): void
     {

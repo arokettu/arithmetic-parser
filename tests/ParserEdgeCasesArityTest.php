@@ -9,7 +9,7 @@ use Arokettu\ArithmeticParser\Exceptions\ParseException;
 use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
 
-class ParserEdgeCasesArityTest extends TestCase
+final class ParserEdgeCasesArityTest extends TestCase
 {
     public function testCommaTopLevel(): void
     {
@@ -81,7 +81,7 @@ class ParserEdgeCasesArityTest extends TestCase
         $config = Config::default();
         $config->addOperator(new Config\UnaryOperator(
             '!',
-            fn ($a) => $a + 1,
+            static fn ($a) => $a + 1,
             Config\UnaryPos::PREFIX,
         ));
 
@@ -96,7 +96,7 @@ class ParserEdgeCasesArityTest extends TestCase
         $config = Config::default();
         $config->addOperator(new Config\UnaryOperator(
             '!',
-            fn ($a) => $a + 1,
+            static fn ($a) => $a + 1,
             Config\UnaryPos::POSTFIX,
         ));
 

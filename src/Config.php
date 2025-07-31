@@ -42,25 +42,25 @@ final class Config
                 // rounding
                 ceil: ceil(...),
                 floor: floor(...),
-                round: fn (float $num, float $precision = 0) => round($num, \intval($precision)),
+                round: static fn (float $num, float $precision = 0) => round($num, \intval($precision)),
                 // conversion
                 deg2rad: deg2rad(...),
                 rad2deg: rad2deg(...),
                 // constants
-                pi: fn () => M_PI,
-                e: fn () => M_E,
-                true: fn () => 1,
-                false: fn () => 0,
-                nan: fn () => NAN,
-                inf: fn () => INF,
+                pi: static fn () => M_PI,
+                e: static fn () => M_E,
+                true: static fn () => 1,
+                false: static fn () => 0,
+                nan: static fn () => NAN,
+                inf: static fn () => INF,
             )->addFunctionsFromCallables(
                 lazy: true,
                 // compare
-                if: fn (Argument\LazyArgument $check, Argument\LazyArgument $then, Argument\LazyArgument $else) =>
+                if: static fn (Argument\LazyArgument $check, Argument\LazyArgument $then, Argument\LazyArgument $else) =>
                     $check->getValue() ?
                     $then->getValue() :
                     $else->getValue(),
-                defined: function (Argument\LazyArgument $argument): float {
+                defined: static function (Argument\LazyArgument $argument): float {
                     try {
                         $argument->getValue();
                         return 1;
@@ -73,69 +73,69 @@ final class Config
 
                 new Config\BinaryOperator(
                     '*',
-                    fn (float $a, float $b): float => $a * $b,
+                    static fn (float $a, float $b): float => $a * $b,
                     Config\BinaryPriority::MUL,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '/',
-                    fn (float $a, float $b): float => $a / $b,
+                    static fn (float $a, float $b): float => $a / $b,
                     Config\BinaryPriority::MUL,
                     Config\BinaryAssoc::LEFT,
                 ),
                 // comparison
                 new Config\BinaryOperator(
                     '<',
-                    fn (float $a, float $b): float => \intval($a < $b),
+                    static fn (float $a, float $b): float => \intval($a < $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '>',
-                    fn (float $a, float $b): float => \intval($a > $b),
+                    static fn (float $a, float $b): float => \intval($a > $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '<=',
-                    fn (float $a, float $b): float => \intval($a <= $b),
+                    static fn (float $a, float $b): float => \intval($a <= $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '>=',
-                    fn (float $a, float $b): float => \intval($a >= $b),
+                    static fn (float $a, float $b): float => \intval($a >= $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '=',
-                    fn (float $a, float $b): float => \intval($a == $b),
+                    static fn (float $a, float $b): float => \intval($a == $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '==',
-                    fn (float $a, float $b): float => \intval($a == $b),
+                    static fn (float $a, float $b): float => \intval($a == $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '!=',
-                    fn (float $a, float $b): float => \intval($a != $b),
+                    static fn (float $a, float $b): float => \intval($a != $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 new Config\BinaryOperator(
                     '<>',
-                    fn (float $a, float $b): float => \intval($a != $b),
+                    static fn (float $a, float $b): float => \intval($a != $b),
                     Config\BinaryPriority::COMPARE,
                     Config\BinaryAssoc::LEFT,
                 ),
                 // logic
                 new Config\BinaryOperator(
                     'and',
-                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                    static fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
                         \intval($a->getValue() && $b->getValue()),
                     Config\BinaryPriority::AND,
                     Config\BinaryAssoc::LEFT,
@@ -143,7 +143,7 @@ final class Config
                 ),
                 new Config\BinaryOperator(
                     'AND',
-                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                    static fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
                         \intval($a->getValue() && $b->getValue()),
                     Config\BinaryPriority::AND,
                     Config\BinaryAssoc::LEFT,
@@ -151,7 +151,7 @@ final class Config
                 ),
                 new Config\BinaryOperator(
                     'or',
-                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                    static fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
                         \intval($a->getValue() || $b->getValue()),
                     Config\BinaryPriority::OR,
                     Config\BinaryAssoc::LEFT,
@@ -159,7 +159,7 @@ final class Config
                 ),
                 new Config\BinaryOperator(
                     'OR',
-                    fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
+                    static fn (Argument\LazyArgument $a, Argument\LazyArgument $b): float =>
                         \intval($a->getValue() || $b->getValue()),
                     Config\BinaryPriority::OR,
                     Config\BinaryAssoc::LEFT,
@@ -167,12 +167,12 @@ final class Config
                 ),
                 new Config\UnaryOperator(
                     'not',
-                    fn (float $a): float => \intval(!$a),
+                    static fn (float $a): float => \intval(!$a),
                     Config\UnaryPos::PREFIX,
                 ),
                 new Config\UnaryOperator(
                     'NOT',
-                    fn (float $a): float => \intval(!$a),
+                    static fn (float $a): float => \intval(!$a),
                     Config\UnaryPos::PREFIX,
                 ),
             );

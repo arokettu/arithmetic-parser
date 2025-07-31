@@ -19,8 +19,8 @@ final class MissingFunctionArgumentsWarning implements Warning
 
     public function getMessage(): string
     {
-        return sprintf(
-            "Insufficient arguments for function %s(): %d expected but only %d provided",
+        return \sprintf(
+            'Insufficient arguments for function %s(): %d expected but only %d provided',
             $this->operation->name,
             $this->declaration->minArity,
             $this->operation->arity,

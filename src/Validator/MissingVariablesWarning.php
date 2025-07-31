@@ -21,8 +21,8 @@ final class MissingVariablesWarning implements Warning
     public function getMessage(): string
     {
         return 'Missing variables: ' . implode(', ', array_map(
-            fn (Variable $op) => $op->asString(),
-            $this->missingVariables
+            static fn (Variable $op) => $op->asString(),
+            $this->missingVariables,
         ));
     }
 

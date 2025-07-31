@@ -22,6 +22,6 @@ final class Parsed
 
     public function asString(): string
     {
-        return implode(' ', array_map(fn (Operation\Operation $o) => $o->asString(), $this->operations));
+        return implode(' ', array_map(static fn (Operation\Operation $o) => $o->asString(), $this->operations));
     }
 }

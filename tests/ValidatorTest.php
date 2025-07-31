@@ -14,7 +14,7 @@ use Arokettu\ArithmeticParser\Parser;
 use Arokettu\ArithmeticParser\Validator;
 use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase
+final class ValidatorTest extends TestCase
 {
     public function testValidate(): void
     {
@@ -124,8 +124,8 @@ class ValidatorTest extends TestCase
         $parsed = (new Parser())->parse('a(b(), c()) + @D(1,2,3)');
         $config = Config::default();
         $config->addFunctionsFromCallables(
-            a: fn ($a, $b) => $a + $b,
-            c: fn () => 123,
+            a: static fn ($a, $b) => $a + $b,
+            c: static fn () => 123,
         );
 
         $this->expectException(MissingFunctionsException::class);
@@ -139,8 +139,8 @@ class ValidatorTest extends TestCase
         $parsed = (new Parser())->parse('a(1,2) + b(1,2)');
         $config = Config::default();
         $config->addFunctionsFromCallables(
-            a: fn ($a, $b) => $a + $b,
-            b: fn ($a, $b, $c) => $a + $b + $c,
+            a: static fn ($a, $b) => $a + $b,
+            b: static fn ($a, $b, $c) => $a + $b + $c,
         );
 
         $this->expectException(MissingFunctionArgumentsException::class);

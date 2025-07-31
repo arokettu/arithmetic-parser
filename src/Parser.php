@@ -78,8 +78,8 @@ final class Parser
                 // error
                 case Lexer\Token::T_UNRECOGNIZED:
                     throw Exceptions\ParseException::fromToken(
-                        sprintf('Unexpected "%s"', $lexer->token->value),
-                        $lexer->token
+                        \sprintf('Unexpected "%s"', $lexer->token->value),
+                        $lexer->token,
                     );
 
                 // numbers
@@ -117,21 +117,21 @@ final class Parser
                     ) {
                         throw Exceptions\ParseException::fromToken(
                             'Empty expression before param separator',
-                            $lexer->token
+                            $lexer->token,
                         );
                     }
 
                     if ($lexer->lookahead?->type === Lexer\Token::T_BRACKET_CLOSE) {
                         throw Exceptions\ParseException::fromToken(
                             'Empty expression before closing bracket',
-                            $lexer->token
+                            $lexer->token,
                         );
                     }
 
                     if ($stack->isEmpty()) {
                         throw Exceptions\ParseException::fromToken(
                             'Param separator not inside brackets',
-                            $lexer->token
+                            $lexer->token,
                         );
                     }
                     // push everything to the next separator or bracket
@@ -176,7 +176,7 @@ final class Parser
                         if ($separators !== 0) {
                             throw Exceptions\ParseException::fromToken(
                                 'Param separator outside of function call',
-                                $lexer->token
+                                $lexer->token,
                             );
                         }
                         break;
@@ -211,7 +211,7 @@ final class Parser
                     ) {
                         throw Exceptions\ParseException::fromToken(
                             "Unary prefix operator ({$lexer->token->value}) missing its argument",
-                            $lexer->token
+                            $lexer->token,
                         );
                     }
                     $stack->push(new Operation\UnaryOperator($lexer->token->value));
@@ -228,7 +228,7 @@ final class Parser
                     ) {
                         throw Exceptions\ParseException::fromToken(
                             "Unary postfix operator ({$lexer->token->value}) missing its argument",
-                            $lexer->token
+                            $lexer->token,
                         );
                     }
                     $operations[] = new Operation\UnaryOperator($lexer->token->value);
@@ -242,7 +242,7 @@ final class Parser
                         $operator = $operators[$lexer->token->value] ??
                             throw Exceptions\ParseException::fromToken(
                                 'Unknown operator ' . $lexer->token->value,
-                                $lexer->token
+                                $lexer->token,
                             );
                     }
 
@@ -262,7 +262,7 @@ final class Parser
 
                             throw Exceptions\ParseException::fromToken(
                                 "Binary operator ({$lexer->token->value}) missing first argument",
-                                $lexer->token
+                                $lexer->token,
                             );
                         }
 
@@ -278,7 +278,7 @@ final class Parser
                         ) {
                             throw Exceptions\ParseException::fromToken(
                                 "Binary operator ({$lexer->token->value}) missing second argument",
-                                $lexer->token
+                                $lexer->token,
                             );
                         }
 

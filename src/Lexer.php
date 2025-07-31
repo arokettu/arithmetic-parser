@@ -19,14 +19,14 @@ final class Lexer extends AbstractLexer
         $this->config = $config ? clone $config : Config::default();
 
         $operators = array_keys($this->config->getOperators());
-        usort($operators, fn (string $a, string $b): int => \strlen($b) <=> \strlen($a));
+        usort($operators, static fn (string $a, string $b): int => \strlen($b) <=> \strlen($a));
         $this->operators = $operators;
     }
 
     protected function getCatchablePatterns(): array
     {
         $operators = '(?:' . implode(')|(?:', array_map(
-            fn (string $s): string => preg_quote($s, '/'),
+            static fn (string $s): string => preg_quote($s, '/'),
             $this->operators,
         )) . ')';
 

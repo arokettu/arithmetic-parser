@@ -16,7 +16,7 @@ use Arokettu\ArithmeticParser\Operation\UnaryOperator as UnaryOp;
 use Arokettu\ArithmeticParser\Parser;
 use PHPUnit\Framework\TestCase;
 
-class PlusMinusTest extends TestCase
+final class PlusMinusTest extends TestCase
 {
     public function testOperators(): void
     {
@@ -59,10 +59,10 @@ class PlusMinusTest extends TestCase
     public function testUnaryCombination(): void
     {
         $config = Config::default()->addOperators(
-            new UnaryOperator('¿', fn ($a) => $a * 2, UnaryPos::PREFIX),
-            new UnaryOperator('¡', fn ($a) => $a + 2, UnaryPos::PREFIX),
-            new UnaryOperator('?', fn ($a) => $a * 2, UnaryPos::POSTFIX),
-            new UnaryOperator('!', fn ($a) => $a + 2, UnaryPos::POSTFIX),
+            new UnaryOperator('¿', static fn ($a) => $a * 2, UnaryPos::PREFIX),
+            new UnaryOperator('¡', static fn ($a) => $a + 2, UnaryPos::PREFIX),
+            new UnaryOperator('?', static fn ($a) => $a * 2, UnaryPos::POSTFIX),
+            new UnaryOperator('!', static fn ($a) => $a + 2, UnaryPos::POSTFIX),
         );
 
         // postfix

@@ -21,8 +21,8 @@ final class MissingFunctionsWarning implements Warning
     public function getMessage(): string
     {
         return 'Missing functions: ' . implode(', ', array_map(
-            fn (FunctionCall $op) => $op->asString(),
-            $this->missingFunctions
+            static fn (FunctionCall $op) => $op->asString(),
+            $this->missingFunctions,
         ));
     }
 
