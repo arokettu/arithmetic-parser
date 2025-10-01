@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Arokettu\ArithmeticParser\Tests;
 
+// phpcs:disable SlevomatCodingStandard.ControlStructures.AssignmentInCondition.AssignmentInCondition
+
 use Arokettu\ArithmeticParser\Argument\LazyArgument;
 use Arokettu\ArithmeticParser\Calculator;
 use Arokettu\ArithmeticParser\Config;

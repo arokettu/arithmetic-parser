@@ -61,10 +61,11 @@ final class Config
             )->addFunctionsFromCallables(
                 lazy: true,
                 // compare
-                if: static fn (Argument\LazyArgument $check, Argument\LazyArgument $then, Argument\LazyArgument $else) =>
-                    $check->getValue() ?
-                    $then->getValue() :
-                    $else->getValue(),
+                if: static fn (
+                    Argument\LazyArgument $check,
+                    Argument\LazyArgument $then,
+                    Argument\LazyArgument $else,
+                ) => $check->getValue() ? $then->getValue() : $else->getValue(),
                 defined: static function (Argument\LazyArgument $argument): float {
                     try {
                         $argument->getValue();

@@ -70,6 +70,7 @@ final class Validator
         } else {
             // no warnings passed - fail early
             /** @noinspection PhpLoopNeverIteratesInspection */
+            // phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable
             foreach (self::doValidate($parsed, $config, $variables) as $_) {
                 return false;
             }
